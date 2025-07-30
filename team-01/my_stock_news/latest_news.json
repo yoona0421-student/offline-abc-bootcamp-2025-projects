@@ -1,1 +1,14 @@
-[]
+[
+    {
+        "time": "Today 03:00AM",
+        "title": "Meta Earnings Are Coming. AI Spending and Ad Revenue Are Concerns Amid High Expectations.",
+        "link": "https://www.barrons.com/articles/meta-stock-price-earnings-ai-ad-revenue-2d9e3b80?mod=bar_FV",
+        "ticker": "GOOGL"
+    },
+    {
+        "time": "Today 02:56AM",
+        "title": "Panasonic's battery-making energy unit books 47% y/y growth in Q1 profit",
+        "link": "https://finance.yahoo.com/news/panasonics-battery-making-energy-unit-065644650.html",
+        "ticker": "TSLA"
+    }
+]

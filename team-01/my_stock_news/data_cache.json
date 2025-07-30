@@ -3,6 +3,21 @@
         "price": "$ -1.46%",
         "news": [
             {
+                "time": "Today 02:41AM",
+                "title": "Samsungs Tesla Order Fuels Recovery Bets Despite Chip Woes",
+                "link": "https://finance.yahoo.com/news/samsung-big-tesla-order-fuels-015541599.html"
+            },
+            {
+                "time": "02:30AM",
+                "title": "Arm Reports Today. Why the Chip Designer Could Meet Expectations.",
+                "link": "https://www.barrons.com/articles/arm-earnings-stock-price-news-9d1b3f8d?mod=bar_FV"
+            },
+            {
+                "time": "01:51AM",
+                "title": "Foxconn will hold a press conference with TECO Electric on Wednesday",
+                "link": "https://finance.yahoo.com/news/foxconn-says-hold-press-conference-055109887.html"
+            },
+            {
                 "time": "Jul-29-25 11:03PM",
                 "title": "What To Expect From Apple's (AAPL) Q2 Earnings",
                 "link": "/news/119999/what-to-expect-from-apples-aapl-q2-earnings"
@@ -11,27 +26,27 @@
                 "time": "10:31PM",
                 "title": "Warren Buffett Has 56% Of His $258 Billion Portfolio's Value Exposed To AI: Here Are The 5 Stocks That Are Leveraging AI Within Berkshire's Holdings",
                 "link": "https://finance.yahoo.com/news/warren-buffett-56-258-billion-023124182.html"
-            },
-            {
-                "time": "09:55PM",
-                "title": "Samsungs Big Tesla Order Fuels Recovery Bets Despite Chip Woes",
-                "link": "https://finance.yahoo.com/news/samsung-big-tesla-order-fuels-015541599.html"
-            },
-            {
-                "time": "09:10PM",
-                "title": "Apple loses fourth AI researcher in a month to Meta's Superintelligence team",
-                "link": "https://www.digitimes.com/news/a20250730VL201/apple-meta-iphone.html"
-            },
-            {
-                "time": "08:01PM",
-                "title": "2025s Most Attractive Employers For MBAs: Finance Surges, Tech Fades",
-                "link": "https://finance.yahoo.com/news/2025-most-attractive-employers-mbas-000119461.html"
             }
         ]
     },
     "TSLA": {
         "price": "$ -3.29%",
         "news": [
+            {
+                "time": "Today 02:56AM",
+                "title": "Panasonic's battery-making energy unit books 47% y/y growth in Q1 profit",
+                "link": "https://finance.yahoo.com/news/panasonics-battery-making-energy-unit-065644650.html"
+            },
+            {
+                "time": "02:41AM",
+                "title": "Samsungs Tesla Order Fuels Recovery Bets Despite Chip Woes",
+                "link": "https://finance.yahoo.com/news/samsung-big-tesla-order-fuels-015541599.html"
+            },
+            {
+                "time": "02:19AM",
+                "title": "LG Energy Clinches $4.3 Billion Battery Deal With Tesla",
+                "link": "https://www.wsj.com/business/autos/lg-energy-clinches-4-3-billion-battery-deal-with-tesla-45c6e45c?mod=wsj_FV"
+            },
             {
                 "time": "Jul-29-25 11:32PM",
                 "title": "Samsung-Tesla deal gives South Korea new leverage in US tariff negotiations",
@@ -41,27 +56,22 @@
                 "time": "11:26PM",
                 "title": "Tesla AI chip deal marks dawn of Samsung's foundry comeback",
                 "link": "https://www.digitimes.com/news/a20250730PD211/samsung-tesla-ai-chip-business-2nm.html"
-            },
-            {
-                "time": "10:54PM",
-                "title": "Samsung likely to ramp Tesla chip production in 2028 and peak in 2029-2032, says DIGITIMES analyst",
-                "link": "https://www.digitimes.com/news/a20250730VL203/tesla-samsung-semiconductor-foundry-digitimes-2028.html"
-            },
-            {
-                "time": "10:08PM",
-                "title": "Tesla AI6 chip order puts Samsung's auto semiconductors on the map",
-                "link": "https://www.digitimes.com/news/a20250730PD206/tesla-samsung-automotive-semiconductors-ceo.html"
-            },
-            {
-                "time": "09:55PM",
-                "title": "Samsungs Big Tesla Order Fuels Recovery Bets Despite Chip Woes",
-                "link": "https://finance.yahoo.com/news/samsung-big-tesla-order-fuels-015541599.html"
             }
         ]
     },
     "GOOGL": {
         "price": "$ 2.30%",
         "news": [
+            {
+                "time": "Today 03:00AM",
+                "title": "Meta Earnings Are Coming. AI Spending and Ad Revenue Are Concerns Amid High Expectations.",
+                "link": "https://www.barrons.com/articles/meta-stock-price-earnings-ai-ad-revenue-2d9e3b80?mod=bar_FV"
+            },
+            {
+                "time": "02:27AM",
+                "title": "Alphabet (GOOGL) Sees 14% YoY Growth in Consolidated Revenues in Q2 2025",
+                "link": "/news/120100/alphabet-googl-sees-14-yoy-growth-in-consolidated-revenues-in-q2-2025"
+            },
             {
                 "time": "Jul-29-25 08:05PM",
                 "title": "1 Reason to Buy Alphabet",
@@ -76,22 +86,27 @@
                 "time": "07:25PM",
                 "title": "Tapfiliate: AI Overviews Are Eating over 50% of Clicks - How to Future-Proof Your Affiliate Content",
                 "link": "https://finance.yahoo.com/news/tapfiliate-ai-overviews-eating-over-232500973.html"
-            },
-            {
-                "time": "06:26PM",
-                "title": "Australia widens teen social media ban to YouTube, scraps exemption",
-                "link": "https://finance.yahoo.com/news/australia-adds-youtube-social-media-222642502.html"
-            },
-            {
-                "time": "06:02PM",
-                "title": "Nvidia AI chip challenger Groq said to be nearing new fundraising at $6B valuation",
-                "link": "https://finance.yahoo.com/news/nvidia-ai-chip-challenger-groq-220251746.html"
             }
         ]
     },
     "MSFT": {
         "price": "$ 1.44%",
         "news": [
+            {
+                "time": "Today 02:30AM",
+                "title": "Arm Reports Today. Why the Chip Designer Could Meet Expectations.",
+                "link": "https://www.barrons.com/articles/arm-earnings-stock-price-news-9d1b3f8d?mod=bar_FV"
+            },
+            {
+                "time": "02:27AM",
+                "title": "Morgan Stanley Maintains a Buy on Microsoft Corporation (MSFT) Stock",
+                "link": "/news/120105/morgan-stanley-maintains-a-buy-on-microsoft-corporation-msft-stock"
+            },
+            {
+                "time": "02:05AM",
+                "title": "Online Gaming Market to Surge to USD 333.20 Billion by 2030, Driven by Technological Innovations and Cloud Integration: MarkNtel Advisors (Top Players - Tencent, Microsoft, Bandai Namco Holdings & Others)",
+                "link": "https://finance.yahoo.com/news/online-gaming-market-surge-usd-060500138.html"
+            },
             {
                 "time": "Jul-29-25 11:30PM",
                 "title": "Altizon Launches APEX Alliance for Azure channel partners",
@@ -101,27 +116,17 @@
                 "time": "09:33PM",
                 "title": "Terror at Blackstone: The Harrowing Hours at 345 Park Avenue",
                 "link": "https://finance.yahoo.com/news/terror-blackstone-harrowing-hours-345-013310447.html"
-            },
-            {
-                "time": "08:01PM",
-                "title": "2025s Most Attractive Employers For MBAs: Finance Surges, Tech Fades",
-                "link": "https://finance.yahoo.com/news/2025-most-attractive-employers-mbas-000119461.html"
-            },
-            {
-                "time": "07:35PM",
-                "title": "Stock market today: Dow, S&P 500, Nasdaq futures trade flat as Wall Street awaits Fed decision, Big Tech results",
-                "link": "https://finance.yahoo.com/news/live/stock-market-today-dow-sp-500-nasdaq-futures-trade-flat-as-wall-street-awaits-fed-decision-big-tech-results-233533691.html"
-            },
-            {
-                "time": "07:35PM",
-                "title": "Stock market today: Dow, S&P 500, Nasdaq futures push up as Wall Street awaits Fed decision, Big Tech results",
-                "link": "https://finance.yahoo.com/news/live/stock-market-today-dow-sp-500-nasdaq-futures-push-up-as-wall-street-awaits-fed-decision-big-tech-results-233533632.html"
             }
         ]
     },
     "AMZN": {
         "price": "$ 1.56%",
         "news": [
+            {
+                "time": "Today 02:27AM",
+                "title": "Amazon.com (AMZN) Reaches a Deal to buy Bee, Highlights Reuters",
+                "link": "/news/120101/amazoncom-amzn-reaches-a-deal-to-buy-bee-highlights-reuters"
+            },
             {
                 "time": "Jul-29-25 11:07PM",
                 "title": "What To Expect From Amazon's (AMZN) Q2 Earnings",
@@ -141,17 +146,22 @@
                 "time": "07:35PM",
                 "title": "Stock market today: Dow, S&P 500, Nasdaq futures push up as Wall Street awaits Fed decision, Big Tech results",
                 "link": "https://finance.yahoo.com/news/live/stock-market-today-dow-sp-500-nasdaq-futures-push-up-as-wall-street-awaits-fed-decision-big-tech-results-233533632.html"
-            },
-            {
-                "time": "04:58PM",
-                "title": "Why the man behind 'The Hater's Guide to the AI Bubble' thinks Wall Street's hottest trade will go bust",
-                "link": "https://www.marketwatch.com/story/why-the-man-behind-the-haters-guide-to-the-ai-bubble-thinks-wall-streets-hottest-trade-will-go-bust-ac398ce0?mod=mw_FV"
             }
         ]
     },
     "NVDA": {
         "price": "$ 5.08%",
         "news": [
+            {
+                "time": "Today 02:30AM",
+                "title": "Arm Reports Today. Why the Chip Designer Could Meet Expectations.",
+                "link": "https://www.barrons.com/articles/arm-earnings-stock-price-news-9d1b3f8d?mod=bar_FV"
+            },
+            {
+                "time": "01:51AM",
+                "title": "Foxconn will hold a press conference with TECO Electric on Wednesday",
+                "link": "https://finance.yahoo.com/news/foxconn-says-hold-press-conference-055109887.html"
+            },
             {
                 "time": "Jul-29-25 09:55PM",
                 "title": "Samsungs Big Tesla Order Fuels Recovery Bets Despite Chip Woes",
@@ -166,16 +176,6 @@
                 "time": "06:02PM",
                 "title": "Nvidia AI chip challenger Groq said to be nearing new fundraising at $6B valuation",
                 "link": "https://finance.yahoo.com/news/nvidia-ai-chip-challenger-groq-220251746.html"
-            },
-            {
-                "time": "04:58PM",
-                "title": "Why the man behind 'The Hater's Guide to the AI Bubble' thinks Wall Street's hottest trade will go bust",
-                "link": "https://www.marketwatch.com/story/why-the-man-behind-the-haters-guide-to-the-ai-bubble-thinks-wall-streets-hottest-trade-will-go-bust-ac398ce0?mod=mw_FV"
-            },
-            {
-                "time": "04:54PM",
-                "title": "As Nvidia Gets Ready for New China H20 Shipments, How Should You Play NVDA Stock?",
-                "link": "https://finance.yahoo.com/m/ef257238-1b7d-3e63-ab2b-0a4d710f540c/as-nvidia-gets-ready-for-new.html"
             }
         ]
     },
