@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>My Pixel Pet</title>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      background-color: #fffbe7;
+      text-align: center;
+      font-family: 'Press Start 2P', monospace;
+      padding: 40px;
+    }
+    h1 {
+      color: #ff66a3;
+      font-size: 1.5rem;
+      font-weight: bold;
+      margin-bottom: 30px;
+      letter-spacing: 1px;
+      line-height: 2;
+      text-shadow: 1px 1px #ffffff;
+    }
+    h2 {
+      color: #333;
+      font-size: 1rem;
+      margin-top: 10px;
+    }
+    img {
+      width: 240px;
+      cursor: pointer;
+      image-rendering: pixelated;
+    }
+    #pet-img {
+      width: 240px;
+    }
+    input, button {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.75rem;
+      padding: 10px;
+      margin: 10px;
+    }
+    #start-screen, #game-screen {
+      display: none;
+    }
+    #emotion-text {
+      background: #ffffff;
+      border: 2px solid #000;
+      padding: 10px;
+      border-radius: 10px;
+      font-size: 0.75rem;
+      display: inline-block;
+    }
+    #emotion-bubble {
+      display: none;
+      position: relative;
+      margin-bottom: 20px;
+    }
+    #emotion-bubble::after {
+      content: "";
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 0;
+      border-left: 10px solid transparent;
+      border-right: 10px solid transparent;
+      border-top: 10px solid #000;
+    }
+    #pet-name-label {
+      margin-top: 10px;
+      font-size: 0.75rem;
+      color: #ff66a3;
+    }
+    .action-buttons button {
+      display: inline-block;
+    }
+    #caption {
+      margin-top: 20px;
+      font-size: 0.75rem;
+      color: #333;
+      background: rgba(255,255,255,0.8);
+      padding: 10px;
+      border: 2px dashed #999;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div id="start-screen">
+    <h1>🐣 Tap the egg to hatch!</h1>
+    <img id="egg-img" src="C:\\work\\abc-bootcamp-2025\\AI-Mini-Project\\image\\egg_idle.png" alt="Egg" />
+  </div>
+
+  <div id="game-screen">
+    <div id="emotion-bubble">
+      <p id="emotion-text">Status: ...</p>
+    </div>
+    <img id="pet-img" src="C:\\work\\abc-bootcamp-2025\\AI-Mini-Project\\image\\cat_idle.png" alt="Pixel Pet" />
+
+    <h2 id="pet-name-label"></h2>
+
+    <div id="name-container">
+      <p>Name your pet:</p>
+      <input type="text" id="name-input" placeholder="Enter name" />
+      <button onclick="confirmName()">OK</button>
+    </div>
+
+    <h1 id="hatched-message" style="display: none;">
+      🎉 <span id="hatched-name"></span> has hatched!
+    </h1>
+
+    <div class="action-buttons" style="display: none;">
+      <button id="feed-button" onclick="feedPet()">Feed 🍎</button>
+      <button id="sleep-button" onclick="sleepPet()">Sleep 💤</button>
+      <button id="health-button" onclick="playWithPet()">Play 🎮</button>
+    </div>
+
+    <div id="caption"></div>
+  </div>
+
+  <audio id="hatch-sound" src="C:\\work\\abc-bootcamp-2025\\AI-Mini-Project\\sound\\hatch.mp3" preload="auto"></audio>
+
+  <script>
+    const eggImg = document.getElementById("egg-img");
+    const startScreen = document.getElementById("start-screen");
+    const gameScreen = document.getElementById("game-screen");
+    const nameInput = document.getElementById("name-input");
+    const hatchedName = document.getElementById("hatched-name");
+    const hatchedMessage = document.getElementById("hatched-message");
+    const hatchSound = document.getElementById("hatch-sound");
+    const emotionText = document.getElementById("emotion-text");
+    const emotionBubble = document.getElementById("emotion-bubble");
+    const petImg = document.getElementById("pet-img");
+    const petNameLabel = document.getElementById("pet-name-label");
+    const feedButton = document.getElementById("feed-button");
+    const sleepButton = document.getElementById("sleep-button");
+    const healthButton = document.getElementById("health-button");
+    const actionButtons = document.querySelector(".action-buttons");
+    const caption = document.getElementById("caption");
+
+    let clickCount = 0;
+    let emotionInterval = null;
+    let currentNeed = "";
+    let currentNeedHandled = true;
+    let petName = "Your pet";
+
+    function showRandomEmotion() {
+      if (!currentNeedHandled) return;
+      const emotions = ["Hunger", "Sleepiness", "Bored"];
+      currentNeed = emotions[Math.floor(Math.random() * emotions.length)];
+      updatePetStatus();
+      currentNeedHandled = false;
+    }
+
+    function updatePetStatus() {
+      emotionText.textContent = `Status: ${currentNeed}`;
+      updatePetImage();
+    }
+
+    function updatePetImage() {
+      switch (currentNeed) {
+        case "Hunger":
+          petImg.src = "C:\\work\\abc-bootcamp-2025\\AI-Mini-Project\\image\\cat_hungry.png";
+          break;
+        case "Sleepiness":
+          petImg.src = "C:\\work\\abc-bootcamp-2025\\AI-Mini-Project\\image\\cat_sleepy.png";
+          break;
+        case "Bored":
+          petImg.src = "C:\\work\\abc-bootcamp-2025\\AI-Mini-Project\\image\\cat_bored.png";
+          break;
+        case "Full":
+          petImg.src = "C:\\work\\abc-bootcamp-2025\\AI-Mini-Project\\image\\cat_full.png";
+          break;
+        case "Awake":
+          petImg.src = "C:\\work\\abc-bootcamp-2025\\AI-Mini-Project\\image\\cat_awake.png";
+          break;
+        case "Excited":
+          petImg.src = "C:\\work\\abc-bootcamp-2025\\AI-Mini-Project\\image\\cat_happy.png";
+          break;
+        default:
+          petImg.src = "C:\\work\\abc-bootcamp-2025\\AI-Mini-Project\\image\\cat_idle.png";
+      }
+    }
+
+    function showCaption(message) {
+      caption.textContent = message;
+      caption.style.display = "block";
+      setTimeout(() => {
+        caption.style.display = "none";
+      }, 3000);
+    }
+
+    function confirmName() {
+      const name = nameInput.value.trim();
+      if (name === "") {
+        showCaption("Please enter a name!");
+        return;
+      }
+      petName = name;
+      hatchedName.textContent = name;
+      petNameLabel.textContent = name;
+      hatchedMessage.style.display = "block";
+      document.getElementById("name-container").style.display = "none";
+      emotionBubble.style.display = "none";
+      actionButtons.style.display = "none";
+
+      clearInterval(emotionInterval);
+
+      setTimeout(() => {
+        hatchedMessage.style.display = "none";
+        emotionBubble.style.display = "block";
+        actionButtons.style.display = "block";
+        showRandomEmotion();
+        emotionInterval = setInterval(showRandomEmotion, 10000);
+      }, 3000);
+    }
+
+    function feedPet() {
+      if (currentNeed === "Hunger") {
+        currentNeed = "Full";
+        currentNeedHandled = true;
+        updatePetStatus();
+        showCaption(`${petName} has eaten and feels full!`);
+      } else {
+        showCaption(`${petName} is not hungry right now.`);
+      }
+    }
+
+    function sleepPet() {
+      if (currentNeed === "Sleepiness") {
+        currentNeed = "Awake";
+        currentNeedHandled = true;
+        updatePetStatus();
+        showCaption(`${petName} had a nice nap and is now awake!`);
+      } else {
+        showCaption(`${petName} is not sleepy right now.`);
+      }
+    }
+
+    function playWithPet() {
+      if (currentNeed === "Bored") {
+        currentNeed = "Excited";
+        currentNeedHandled = true;
+        updatePetStatus();
+        showCaption(`${petName} is excited after playing!`);
+      } else {
+        showCaption(`${petName} doesn’t want to play right now.`);
+      }
+    }
+
+    eggImg.addEventListener("click", () => {
+      clickCount++;
+      if (clickCount <= 2) {
+        eggImg.src = "C:\\work\\abc-bootcamp-2025\\AI-Mini-Project\\image\\egg_idle.png";
+      } else if (clickCount <= 4) {
+        eggImg.src = "C:\\work\\abc-bootcamp-2025\\AI-Mini-Project\\image\\egg_cracking.png";
+      } else if (clickCount === 5) {
+        eggImg.src = "C:\\work\\abc-bootcamp-2025\\AI-Mini-Project\\image\\egg_broken.png";
+      } else if (clickCount === 6) {
+        hatchSound.play();
+        startScreen.style.display = "none";
+        gameScreen.style.display = "block";
+      }
+    });
+
+    startScreen.style.display = "block";
+  </script>
+</body>
+</html>
