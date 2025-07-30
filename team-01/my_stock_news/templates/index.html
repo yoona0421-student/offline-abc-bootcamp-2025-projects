@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Stock Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+    <style>
+        :root { /* CSS 변수들 */
+            --bg-color: #1a1a1a; --card-color: #2b2b2b; --text-color: #e0e0e0;
+            --text-secondary-color: #a0a0a0; --accent-color: #4a90e2; --border-color: #444;
+            --price-up-color: #28a745; --price-down-color: #d9534f;
+        }
+        body { font-family: 'Roboto', 'Noto Sans KR', sans-serif; background-color: var(--bg-color); color: var(--text-color); margin: 0; padding: 2em; }
+        .container { max-width: 1200px; margin: auto; }
+        .main-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5em; }
+        .header-title h1 { font-size: 1.8em; font-weight: 500; color: var(--accent-color); margin: 0; }
+        .info-bar { display: flex; align-items: center; gap: 20px; }
+        .info-item { display: flex; align-items: center; font-size: 0.9em; background-color: var(--card-color); padding: 8px 12px; border-radius: 8px; }
+        .info-item i { margin-right: 8px; color: var(--accent-color); }
+        .search-bar { width: 100%; padding: 15px; font-size: 1.2em; border-radius: 8px; margin-bottom: 2em; background-color: var(--card-color); border: 1px solid var(--border-color); color: var(--text-color); box-sizing: border-box; }
+        
+        /* (MODIFIED) 뉴스 피드 카드 스타일 수정 */
+        .news-feed-card {
+            background-color: var(--card-color);
+            border-radius: 12px;
+            padding: 20px;
+            border-left: 4px solid var(--accent-color);
+            margin-bottom: 2em; /* 그리드와의 간격 */
+        }
+        .news-feed-card h3 { margin-top: 0; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; }
+        .news-feed-list { list-style: none; padding: 0; margin: 0; max-height: 250px; /* 높이 살짝 조정 */ overflow-y: auto; }
+        .feed-item { padding: 10px 5px; border-bottom: 1px solid var(--border-color); font-size: 0.9em; }
+        .feed-item:last-child { border-bottom: none; }
+        .feed-item a { color: var(--text-color); text-decoration: none; }
+        .feed-item a:hover { text-decoration: underline; }
+        .ticker-badge { background-color: var(--accent-color); color: white; padding: 2px 6px; border-radius: 4px; font-size: 0.8em; margin-right: 8px; font-weight: bold; }
+        
+        #grid-view, #detail-view, #search-result-view { display: block; }
+        .stock-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; }
+        .stock-card { background-color: var(--card-color); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; cursor: pointer; transition: transform 0.2s ease; }
+        .stock-card:hover { transform: translateY(-5px); }
+        .card-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 15px; }
+        .card-header h2 { font-size: 2em; margin: 0; }
+        .price { font-size: 1.8em; font-weight: bold; }
+        .news-preview { list-style: none; padding: 0; margin: 0; font-size: 0.9em; color: var(--text-secondary-color); }
+        .news-preview-item { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 8px; }
+        .detail-container { background-color: var(--card-color); border-radius: 12px; padding: 30px; position: relative; }
+        .view-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; margin-bottom: 20px; }
+        .view-header h2 { font-size: 3em; margin: 0; }
+        .button-group { display: flex; gap: 10px; }
+        .add-button, .close-button, .remove-button { background: none; border: 1px solid; font-size: 1em; padding: 10px 15px; border-radius: 8px; cursor: pointer; transition: all 0.2s; }
+        .add-button { border-color: var(--price-up-color); color: var(--price-up-color); } .add-button:hover { background-color: var(--price-up-color); color: white; }
+        .close-button { border-color: var(--accent-color); color: var(--accent-color); } .close-button:hover { background-color: var(--accent-color); color: white; }
+        .remove-button { border-color: var(--price-down-color); color: var(--price-down-color); } .remove-button:hover { background-color: var(--price-down-color); color: white; }
+        .news-list { list-style: none; padding-left: 0; }
+        .news-item { display: flex; align-items: center; padding: 15px 5px; border-bottom: 1px solid var(--border-color); }
+        .news-time { color: var(--text-secondary-color); font-size: 0.9em; min-width: 90px; }
+        .news-item a { color: var(--text-color); text-decoration: none; font-weight: 500; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="main-header">
+            <div class="header-title"><h1><i class="fa-solid fa-chart-line"></i> My Stock Dashboard</h1></div>
+            <div class="info-bar">
+                <div class="info-item"><i class="fa-solid fa-calendar-day"></i><span><strong>KST:</strong> {{ kst_time }}</span></div>
+                <div class="info-item"><i class="fa-solid fa-clock"></i><span><strong>ET:</strong> {{ et_time }}</span></div>
+            </div>
+        </header>
+
+        <form id="search-form"><input type="text" id="search-input" class="search-bar" placeholder="관심있는 종목 티커를 검색하세요 (예: F, UBER) ..."></form>
+        
+        <!-- (MODIFIED) 그리드 뷰를 감싸던 컨테이너를 제거하고, 뉴스 피드를 이 위치로 이동 -->
+        <div id="grid-view">
+            <!-- (NEW) 뉴스 피드 카드가 이 위치로 이동 -->
+            <div class="news-feed-card">
+                <h3><i class="fa-solid fa-bell"></i> 실시간 뉴스 피드</h3>
+                <ul id="news-feed-list" class="news-feed-list">
+                    <li>새로운 뉴스가 여기에 표시됩니다...</li>
+                </ul>
+            </div>
+            
+            <div class="stock-grid">
+                {% for ticker, data in all_stock_data.items() %}
+                <div class="stock-card" data-ticker="{{ ticker }}"><div class="card-header"><h2>{{ ticker }}</h2><p class="price">{{ data.price }}</p></div><ul class="news-preview">{% for news in data.news[:2] %}<li class="news-preview-item">{{ news.title }}</li>{% endfor %}</ul></div>
+                {% endfor %}
+            </div>
+        </div>
+        
+        <!-- 상세/검색 뷰 (변경 없음) -->
+        <div id="detail-view" style="display: none;"><div class="detail-container"><div class="view-header"><h2 id="detail-ticker-title"></h2><div class="button-group"><button class="remove-button" id="remove-ticker-button">대시보드에서 제거</button><button class="close-button" id="close-detail-view">메인으로 돌아가기</button></div></div><p id="detail-ticker-price" class="price" style="margin-top:0; margin-bottom: 20px;"></p><ul id="detail-news-list" class="news-list"></ul><div id="tradingview-chart-container" style="height: 450px; margin-top: 30px;"></div></div></div>
+        <div id="search-result-view" style="display: none;"><div class="detail-container"><div class="view-header"><h2 id="search-ticker-title"></h2><div class="button-group"><button class="add-button" id="add-ticker-button">대시보드에 추가</button><button class="close-button" id="close-search-view">메인으로 돌아가기</button></div></div><p id="search-ticker-price" class="price" style="margin-top:0; margin-bottom: 20px;"></p><ul id="search-news-list" class="news-list"></ul></div></div>
+    </div>
+
+    <script>
+        // (MODIFIED) 뷰 전환 로직 간소화
+        const allStockData = {{ all_stock_data | tojson }};
+        const gridView = document.getElementById('grid-view'), detailView = document.getElementById('detail-view'), searchResultView = document.getElementById('search-result-view'), searchForm = document.getElementById('search-form'), searchInput = document.getElementById('search-input');
+        function renderTradingViewWidget(t) { const c=document.getElementById('tradingview-chart-container'); c.innerHTML=''; new TradingView.widget({"autosize":true,"symbol":t,"interval":"D","timezone":"Etc/UTC","theme":"dark","style":"1","locale":"kr","enable_publishing":false,"hide_side_toolbar":false,"container_id":"tradingview-chart-container"}); }
+        function showDetailView(t) { const d=allStockData[t]; document.getElementById('detail-ticker-title').innerText=t; document.getElementById('detail-ticker-price').innerText=d.price; document.getElementById('remove-ticker-button').dataset.ticker=t; const n=document.getElementById('detail-news-list'); n.innerHTML=''; d.news.forEach(i=>{n.innerHTML+=`<li class="news-item"><span class="news-time">${i.time}</span><a href="${i.link}" target="_blank">${i.title}</a></li>`;}); renderTradingViewWidget(t); switchView('detail-view'); }
+        function switchView(v) {
+            gridView.style.display = 'none';
+            detailView.style.display = 'none';
+            searchResultView.style.display = 'none';
+            document.getElementById(v).style.display = 'block'; // grid, block 구분 없이 모두 block으로 처리
+        }
+        function showSearchResultView(t,d) { document.getElementById('search-ticker-title').innerText=t; document.getElementById('search-ticker-price').innerText=d.price; document.getElementById('add-ticker-button').dataset.ticker=t; const n=document.getElementById('search-news-list'); n.innerHTML=''; if(d.news&&d.news.length>0){d.news.forEach(i=>{n.innerHTML+=`<li class="news-item"><span class="news-time">${i.time}</span><a href="${i.link}" target="_blank">${i.title}</a></li>`;});}else{n.innerHTML='<li>관련 뉴스가 없습니다.</li>';} switchView('search-result-view'); }
+        document.querySelectorAll('.stock-card').forEach(c=>c.addEventListener('click',()=>showDetailView(c.dataset.ticker)));
+        document.getElementById('close-detail-view').addEventListener('click',()=>switchView('grid-view'));
+        document.getElementById('close-search-view').addEventListener('click',()=>switchView('grid-view'));
+        searchForm.addEventListener('submit',async e=>{ e.preventDefault(); const t=searchInput.value.trim().toUpperCase(); if(!t)return; const r=await fetch(`/api/search/${t}`),d=await r.json(); searchInput.value=''; showSearchResultView(t,d); });
+        document.getElementById('add-ticker-button').addEventListener('click',async e=>{ const t=e.target.dataset.ticker; const r=await fetch('/api/add_ticker',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({ticker:t})}),j=await r.json(); alert(j.message); if(j.status==='success')location.reload(); });
+        document.getElementById('remove-ticker-button').addEventListener('click',async e=>{ const t=e.target.dataset.ticker; if(confirm(`정말 ${t}를 제거하시겠습니까?`)){const r=await fetch('/api/remove_ticker',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({ticker:t})}),j=await r.json(); alert(j.message); if(j.status==='success')location.reload();} });
+        
+        const newsFeedList = document.getElementById('news-feed-list');
+        const displayedNewsLinks = new Set();
+        async function fetchLatestNews() {
+            const response = await fetch('/api/latest_news');
+            const newNewsItems = await response.json();
+            if (newNewsItems && newNewsItems.length > 0) {
+                if (newsFeedList.children.length === 1 && !newsFeedList.querySelector('a')) { newsFeedList.innerHTML = ''; }
+                newNewsItems.forEach(news => {
+                    if (!displayedNewsLinks.has(news.link)) {
+                        const item = document.createElement('li');
+                        item.className = 'feed-item';
+                        item.innerHTML = `<span class="ticker-badge">${news.ticker}</span> <a href="${news.link}" target="_blank">${news.title}</a>`;
+                        newsFeedList.prepend(item);
+                        displayedNewsLinks.add(news.link);
+                    }
+                });
+                while (newsFeedList.children.length > 15) {
+                    const oldLink = newsFeedList.lastChild.querySelector('a')?.href;
+                    if(oldLink) displayedNewsLinks.delete(oldLink);
+                    newsFeedList.removeChild(newsFeedList.lastChild);
+                }
+            }
+        }
+        setTimeout(() => { fetchLatestNews(); setInterval(fetchLatestNews, 20000); }, 5000);
+        switchView('grid-view');
+    </script>
+</body>
+</html>
