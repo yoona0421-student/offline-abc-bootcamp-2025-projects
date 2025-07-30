@@ -1,30 +1,24 @@
+<!-- index.html -->
 <!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>럭키비키 사고 생성기</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="min-h-screen bg-pink-100 flex items-center justify-center px-4">
-  <div class="bg-white shadow-xl rounded-2xl p-8 max-w-md w-full text-center space-y-6">
-    <h1 class="text-2xl font-bold text-pink-600">🧠 오늘의 럭키비키 사고</h1>
+  <div class="bg-white p-6 rounded-xl shadow-md max-w-md w-full text-center space-y-4">
+    <h1 class="text-xl font-bold text-pink-600">🧠 오늘의 럭키비키 사고</h1>
 
-    <label for="userInput" class="block text-gray-700 text-lg">
-      오늘 어떤 일이 있었는지 말해줘!
-    </label>
-    <textarea id="userInput" rows="3"
-      class="w-full p-3 border border-pink-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-400"
-      placeholder="예: 나 오늘 너무 힘들었어.."></textarea>
+    <!-- 이미지 부분 제거됨 -->
 
-    <button id="generateBtn"
-      class="w-full bg-pink-500 hover:bg-pink-600 text-white font-semibold py-2 px-4 rounded-lg">
+    <textarea id="userInput" rows="3" class="w-full border rounded p-2" placeholder="예: 오늘 너무 힘들었어.."></textarea>
+    
+    <button id="generateBtn" class="w-full bg-pink-500 text-white font-semibold py-2 px-4 rounded">
       원영적 사고하기 🍈
     </button>
 
-    <div id="result"
-      class="text-lg text-gray-800 bg-pink-50 rounded-lg p-4 min-h-[80px] whitespace-pre-line">
-    </div>
+    <div id="result" class="min-h-[80px] text-left whitespace-pre-line text-pink-800"></div>
   </div>
 
   <script>
@@ -32,6 +26,22 @@
     const result = document.getElementById("result");
     const button = document.getElementById("generateBtn");
 
+    // ✅ Generator + 타자 효과 함수
+    function* typeWriterGenerator(text, element) {
+      for (const char of text) {
+        element.textContent += char;
+        yield;
+      }
+    }
+
+    async function runGenerator(gen, delay = 30) {
+      for (let step of gen) {
+        await new Promise((resolve) => setTimeout(resolve, delay));
+        step;
+      }
+    }
+
+    // ✅ 클릭 시 실행
     button.addEventListener("click", async () => {
       const userText = input.value.trim();
       if (!userText) {
@@ -44,19 +54,25 @@
       try {
         const response = await fetch("/api/wonyoung", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json"
+          },
           body: JSON.stringify({ text: userText })
         });
 
         const data = await response.json();
-        if (data.result) {
-          result.textContent = data.result;
+        const wonyoungText = data.result.replace(/로쿠비키/g, "럭키비키");
+
+        if (wonyoungText) {
+          result.textContent = ""; // 초기화
+          const gen = typeWriterGenerator(wonyoungText, result);
+          runGenerator(gen, 30); // ✨ 여기서 타자 효과 시작
         } else {
           result.textContent = "응답을 받아오지 못했어요. 😢";
         }
       } catch (err) {
         result.textContent = "에러가 발생했어요. 나중에 다시 시도해줘! 😥";
-        console.error("Fetch Error:", err);
+        console.error("Error:", err);
       }
     });
   </script>

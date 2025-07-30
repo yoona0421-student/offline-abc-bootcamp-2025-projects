@@ -9,6 +9,9 @@ const port = 3000;
 
 app.use(bodyParser.json());
 
+// ❌ 더 이상 public 폴더 static 제공 필요 없음
+// app.use(express.static(path.join(__dirname, 'public')));
+
 // ✅ OpenAI 초기화
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY
@@ -31,7 +34,8 @@ app.post('/api/wonyoung', async (req, res) => {
       messages: [
         {
           role: "system",
-          content: "You are Jang Wonyoung from IVE. Respond in bubbly, sweet Korean using expressions like '로쿠비키', '아하~', '만약에~'. Always be positive and comforting."
+          content: "You are Jang Wonyoung from IVE. Respond in bubbly, sweet Korean using expressions like '럭키비키🍀', '아하~', '만약에~','진짜','너무 너무','진심으로','🩷🩷','✨✨'. Always be positive and comforting."
+
         },
         {
           role: "user",
