@@ -1,0 +1,325 @@
+/* Google Fonts에서 깔끔한 폰트 가져오기 */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap');
+
+/* 기본 스타일 초기화 및 설정 */
+body {
+  margin: 0;
+  font-family: 'Noto Sans KR', sans-serif;
+  background-color: #f8f9fa;
+  color: #333;
+}
+
+/* 전체 콘텐츠를 감싸고 중앙 정렬하는 컨테이너 */
+.container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* 버튼 스타일 */
+.btn-secondary {
+  display: inline-block;
+  padding: 8px 16px;
+  background-color: #6c757d;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  text-decoration: none;
+  transition: background-color 0.3s;
+}
+
+.btn-secondary:hover:not([disabled]) {
+  background-color: #5a6268;
+}
+
+.btn-secondary[disabled] {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+/* 헤더 영역 */
+.header {
+  text-align: center;
+  padding: 40px 0;
+}
+
+.header h1 {
+  font-size: 2.5rem;
+  color: #4a69bd;
+  margin: 0;
+  margin-bottom: 10px;
+}
+
+.header p {
+  font-size: 1.1rem;
+  color: #6c757d;
+}
+
+/* '새 파티 만들기' 버튼 스타일 */
+.btn-primary {
+  display: inline-block;
+  background-color: #4a69bd;
+  color: white;
+  padding: 12px 24px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 1rem;
+  margin-top: 20px;
+  transition: background-color 0.2s ease-in-out;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-primary:hover {
+  background-color: #3b528f;
+}
+
+/* 파티 목록 섹션 */
+.party-section {
+  margin-top: 40px;
+}
+
+.party-section h2 {
+  font-size: 1.8rem;
+  border-bottom: 2px solid #dee2e6;
+  padding-bottom: 10px;
+  margin-bottom: 30px;
+}
+
+/* 파티 카드를 담는 그리드 컨테이너 */
+.party-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 24px;
+}
+
+/* 개별 파티 카드 스타일 */
+.party-card {
+  background-color: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+.party-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+}
+
+.party-card .title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin-top: 0;
+  margin-bottom: 16px;
+}
+
+.party-card .info {
+  font-size: 0.95rem;
+  color: #495057;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+}
+
+.party-card .status {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #495057;
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid #e9ecef;
+  display: flex;
+  align-items: center;
+}
+
+/* 파티가 없을 때 메시지 */
+.no-party-message {
+  text-align: center;
+  padding: 50px;
+  background-color: #fff;
+  border-radius: 12px;
+  color: #6c757d;
+}
+
+/*
+================================
+폼 페이지 스타일
+================================
+*/
+.form-container {
+  max-width: 600px;
+  margin: 40px auto;
+  padding: 30px 40px;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.form-container h1 {
+  text-align: center;
+  margin-bottom: 30px;
+  font-size: 1.8rem;
+  color: #333;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  font-weight: 700;
+  margin-bottom: 8px;
+  font-size: 0.95rem;
+  color: #495057;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ced4da;
+  border-radius: 8px;
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #4a69bd;
+  box-shadow: 0 0 0 2px rgba(74, 105, 189, 0.2);
+}
+
+.link-to-main {
+  display: block;
+  text-align: center;
+  margin-top: 20px;
+  color: #6c757d;
+  text-decoration: none;
+}
+
+/*
+================================
+메인 페이지 카드 디자인 개선
+================================
+*/
+.party-card .card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.party-card .category-tag {
+  background-color: #e9ecef;
+  color: #495057;
+  padding: 4px 10px;
+  border-radius: 15px;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.info .icon {
+  width: 16px;
+  height: 16px;
+  margin-right: 8px;
+  color: #868e96;
+  vertical-align: middle;
+}
+
+a.card-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+/*
+================================
+새로운 폼 디자인
+================================
+*/
+.form-section {
+  margin-bottom: 30px;
+}
+
+.form-section-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 15px;
+}
+
+.form-group select.input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ced4da;
+  border-radius: 8px;
+  font-size: 1rem;
+  box-sizing: border-box;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 16px 12px;
+}
+
+.form-group input::placeholder {
+  color: #adb5bd;
+}
+
+/*
+================================
+폼 UX 개선 디자인
+================================
+*/
+.form-row {
+  display: flex;
+  gap: 15px;
+}
+
+.form-row .form-group {
+  flex: 1;
+}
+
+.stepper {
+  display: flex;
+  align-items: center;
+  border: 1px solid #ced4da;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.stepper input {
+  width: 100%;
+  border: none !important;
+  text-align: center;
+  font-size: 1.1rem;
+  font-weight: 700;
+  box-shadow: none !important;
+}
+.stepper input::-webkit-outer-spin-button,
+.stepper input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.stepper input[type=number] {
+  -moz-appearance: textfield;
+}
+
+.stepper button {
+  background-color: #f8f9fa;
+  border: none;
+  padding: 10px 15px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  color: #495057;
+}
+
+.stepper button:hover {
+  background-color: #e9ecef;
+}

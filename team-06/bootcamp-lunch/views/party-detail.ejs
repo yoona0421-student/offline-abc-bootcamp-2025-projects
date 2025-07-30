@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= party.title %> - 부캠런치</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <%- include('_navbars.ejs') %>
+
+  <div class="form-container">
+    <h1>파티 상세 정보</h1>
+
+    <div class="party-detail-info">
+      <h2><%= party.title %></h2>
+      <p><strong>카테고리:</strong> <%= party.category || '지정 안함' %></p>
+      <p><strong>장소:</strong> <%= party.location || '지정 안함' %></p>
+      <p><strong>시간:</strong> <%= party.meet_time %></p>
+      <p><strong>주최자:</strong> <%= party.host_name %></p>
+      <p><strong>모집 현황:</strong> <%= party.current_members %> / <%= party.max_members %> 명</p>
+    </div>
+
+    <br>
+    
+    <% if (party.current_members < party.max_members) { %>
+      <% if (!locals.myParties || !myParties.some(p => p.id === party.id)) { %>
+        <form action="/party/<%= party.id %>/join" method="POST">
+          <button type="submit" class="btn-primary" style="width:100%;">참여하기</button>
+        </form>
+      <% } else { %>
+        <button class="btn-secondary" style="width:100%;" disabled>이미 참여한 파티입니다</button>
+      <% } %>
+    <% } else { %>
+      <button class="btn-primary" style="width:100%; background-color: #6c757d; cursor: not-allowed;" disabled>
+        마감되었습니다
+      </button>
+    <% } %>
+
+    <a href="/" class="link-to-main">메인으로 돌아가기</a>
+  </div>
+
+</body>
+</html>
