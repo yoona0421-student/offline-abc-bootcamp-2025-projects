@@ -7,8 +7,21 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="container">
-    <h1>오늘의 감정을 선택하세요 😊</h1>
+  <link href="https://fonts.googleapis.com/css2?family=Gamja+Flower&family=Hi+Melody&family=Nanum+Brush+Script&family=Nanum+Pen+Script&display=swap" rel="stylesheet">
+
+  <div class="header">
+  <h1>오늘의 감정을 선택하세요 😊</h1>
+  <button id="back-button" class="back-button">← 다시 선택하기</button>
+  </div>
+
+  <!-- 🔍 감정 추가 입력창 -->
+  <div class="input-area">
+    <input type="text" id="custom-emotion-input" placeholder="감정을 입력하세요 (예: 뿌듯함)" />
+    <button id="add-emotion-button">추가</button>
+  </div>
+
+
+    
     <div class="emotion-buttons">
       <button class="emotion" data-emotion="행복">😄 행복</button>
       <button class="emotion" data-emotion="화남">😡 화남</button>
@@ -21,13 +34,16 @@
       <button class="emotion" data-emotion="걱정">😰 걱정</button>
       <button class="emotion" data-emotion="지루함">😐 지루함</button>
     </div>
+
     <div class="emotion-display">
       <div id="emoji" class="emoji"></div>
       <div id="message" class="message"></div>
       <div id="cheer" class="cheer"></div>
       <div id="quote" class="quote"></div>
+      <div class="save-info">오늘 나의 감정 기록은 저장됩니다.</div>
+
     </div>
-  </div>
+
   <script src="scripts.js"></script>
 </body>
 </html>
