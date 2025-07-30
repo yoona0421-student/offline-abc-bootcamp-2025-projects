@@ -2,6 +2,72 @@
 
 ## 멤버: 민재홍 장재훈 정윤아
 
+# Project2: 인사이드아웃 감정 기반 음악 추천 웹앱 🎧
+
+## 📌 프로젝트 소개
+
+이 프로젝트는 **인사이드아웃 캐릭터**(기쁨이, 슬픔이, 버럭이, 까칠이, 소심이, 불안이, 부럽이, 따분이, 당황이)를 활용하여  
+사용자의 감정에 맞는 음악을 추천해주는 웹 애플리케이션입니다.
+
+사용자는 캐릭터 구슬을 클릭하거나, 직접 감정을 입력해 AI에게 분석을 요청할 수 있습니다.
+
+- **Frontend:** HTML, CSS, JavaScript  
+- **Backend:** Node.js (Express), OpenAI API  
+- **특징:** 감정별 캐릭터 이미지, 네온 효과, 반응형 모바일 템플릿, 실시간 음악 추천
+
+---
+
+## 📁 주요 파일 구조 및 역할
+
+| 파일/폴더               | 설명 |
+|-------------------------|------|
+| `index.html`            | 메인 웹페이지. 감정 선택, 추천 결과, UI/UX 전반 담당 |
+| `server.js`             | Node.js Express 서버. 감정 분석 및 음악 추천 API 제공 |
+| `images/`               | 인사이드아웃 캐릭터 및 배경 이미지 폴더 |
+| ├─ `joy.png`            | 기쁨이 캐릭터 이미지 |
+| ├─ `sadness.png`        | 슬픔이 캐릭터 이미지 |
+| ├─ `anger.png`          | 버럭이 캐릭터 이미지 |
+| ├─ `disgust.png`        | 까칠이 캐릭터 이미지 |
+| ├─ `fear.png`           | 소심이 캐릭터 이미지 |
+| ├─ `anxiety.png`        | 불안이 캐릭터 이미지 |
+| ├─ `envy.png`           | 부럽이 캐릭터 이미지 |
+| ├─ `boredom.png`        | 따분이 캐릭터 이미지 |
+| ├─ `embarrassment.png`  | 당황이 캐릭터 이미지 |
+| ├─ `chat.png`           | 추천 카드 배경 이미지 |
+| └─ `backgrouund.jpg`    | 웹앱 바깥 배경 이미지 |
+| `.env`                  | OpenAI API 키 등 환경 변수 파일 (직접 생성 필요) |
+| `package.json`          | Node.js 프로젝트 의존성 및 실행 설정 |
+| `README.md`             | 프로젝트 설명 문서 (본 파일) |
+
+---
+
+## 🌟 주요 기능
+
+### 🎯 감정 구슬 클릭
+- 인사이드아웃 캐릭터 구슬을 클릭하면 해당 감정에 어울리는 음악 3곡을 추천받을 수 있어요.
+
+### ✏️ 직접 감정 입력
+- "내 감정이 없어요" 버튼 클릭 → 감정을 문장으로 입력  
+- AI가 감정을 분석해 적절한 곡 추천
+
+### 🎵 추천 결과
+- 곡 제목, 아티스트, 유튜브 뮤직 링크를 카드 형태로 출력  
+- 카드 배경: `chat.png`  
+- `music play` 버튼: 빨간색 강조
+
+### 📱 반응형 UI
+- 모바일 & PC 모두 자연스럽게 보이는 스마트폰 프레임  
+- 감정별 네온 효과, 파스텔톤, 인사이드아웃 스타일 강조
+
+---
+
+## ▶️ 실행 방법
+
+1. **의존성 설치**
+   ```bash
+   npm install
+
+
 ## project3 - 🗺️ AI 여행 일정 추천기 - 사용 설명서
 
 AI 여행 일정 추천기는 사용자의 감정, 예산, 출발지, 인원 수, 여행 테마 등을 바탕으로 현실적인 여행 일정을 생성해주는 웹 애플리케이션입니다. ChatGPT (GPT-4) API를 사용하여 스트리밍 방식으로 결과를 빠르게 제공합니다.
@@ -151,49 +217,57 @@ GPT에게 다음과 같은 형식을 강제합니다:
 > 문의 또는 개선 제안은 GitHub Issue 또는 이메일로 전달해주세요.
 
 
-## project4- Emotion Detective 웹앱 설명서
-### 1. 백엔드 실행
+# Project4 : 감정 스무고개 웹앱 🔮🕵️‍♂️
 
-cd emotion-detector/backend
+## 📌 프로젝트 소개
+**20 Questions** 게임 방식으로 사용자의 현재 **감정**을 맞히는 웹 애플리케이션입니다.  
+OpenAI GPT가 최대 7 개의 예‧아니오 질문을 던져 감정을 한 단어로 추측합니다.
 
-python -m venv venv
+- **Frontend:** HTML, CSS, JavaScript  
+- **Backend:** Python (Flask), OpenAI API  
+- **특징:** 세션별 대화 유지, 반응형 레이아웃, 커스텀 네온 UI, GmarketSans 폰트
 
-#Windows
+---
 
-venv\Scripts\activate
+## 📁 주요 파일 구조 및 역할
 
-#macOS/Linux
+| 파일/폴더            | 설명 |
+|----------------------|------|
+| `app.py`             | Flask 서버. 세션 관리 · OpenAI API 연동 |
+| `requirements.txt`   | Python 의존성 목록 |
+| `.env`               | `OPENAI_API_KEY` 저장 (직접 생성 필요) |
+| `static/index.html`  | 메인 페이지. 질문/답변 UI |
+| `static/style.css`   | 전반적인 스타일, 그라디언트·네온 효과 |
+| `static/script.js`   | 프런트 로직 (fetch, 상태·UI 업데이트) |
+| `static/fonts/`      | GmarketSans TTF 3종 |
+| `README.md`          | 프로젝트 설명 (본 파일) |
 
-source venv/bin/activate
+---
 
-pip install flask python-dotenv flask-cors openai
+## 🌟 주요 기능
 
-python app.py
+### 🎲 게임 시작
+- **“게임 시작”** 버튼을 누르면 GPT가 첫 질문을 생성합니다.
 
-확인:
-터미널에 Running on http://0.0.0.0:5000/ 메시지가 출력되는지 확인하세요.
+### 🙋‍♀️ 예 / 아니오 / 모름 응답
+- 버튼 클릭 한 번으로 빠르게 답변
+- 7 개 이하 질문으로 감정 추측
 
-### 2. 프론트엔드 실행
-cd emotion-detector/frontend
+### 🔍 감정 추측 & 결과
+- `내가 생각한 감정은 ___ 맞아?` 포맷으로 추측  
+- 맞혔는지 여부를 선택하면 게임 종료 → “다시 하기” 가능
 
-python -m http.server 8000
+### 📱 반응형 UI
+- 모바일·데스크톱 모두 자연스럽게 동작  
+- 각 질문 카드에 타이핑 애니메이션 & 네온 강조 효과
 
-브라우저에서 http://localhost:8000 을 열어 챗 UI가 표시되는지 확인합니다.
+---
 
-### 3. 동작 테스트
-페이지가 열리면 자동으로 GPT의 첫 번째 질문이 표시됩니다.
+## 🛠️ 사전 준비
 
-입력창에 답변을 적고 전송 버튼을 누르면 다음 질문이 내려옵니다.
+1. **Python 3.9+** 설치  
+2. (선택) 가상 환경  
+   ```bash
+   python -m venv venv
+   source venv/bin/activate      # Windows: venv\Scripts\activate
 
-총 7회 질문 후, 마지막에 “현재 사용자의 감정”이 한 문장으로 출력됩니다.
-
-### 팁 & 체크리스트
-.env 파일에 OPENAI_API_KEY를 정확히 입력했나요?
-
-flask-cors가 설치되어 있고, app.py에 CORS(app) 설정이 반영되었나요?
-
-HTTP 서버(python -m http.server)로 열었나요? (file:// 로 열면 CORS 문제가 발생합니다)
-
-OpenAI 패키지를 최신 버전으로 업그레이드(pip install --upgrade openai)했나요?
-
-터미널(백엔드)와 브라우저 DevTools(Network/Console)에서 에러 메시지를 확인하세요.
