@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>오늘의 일정 우선순위 앱</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>TODO LIST</h1>
+        <form id="scheduleForm">
+            <label for="role">직종 선택:</label>
+            <select id="role" required>
+                <option value="elementary">초등학생</option>
+                <option value="middle">중학생</option>
+                <option value="high">고등학생</option>
+                <option value="university">대학생</option>
+                <option value="graduate">대학원생</option>
+                <option value="worker">회사원</option>
+                <option value="freelancer">프리랜서</option>
+                <option value="etc">기타</option>
+            </select>
+            <label>일정 입력:</label>
+            <div id="tasks"></div>
+            <button type="button" id="addTask">일정 입력란 추가</button>
+            <button type="submit">우선순위 보기</button>
+            <button type="button" id="goToPriorityPage">감정분석 계획</button>
+            
+        </form>
+  
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>

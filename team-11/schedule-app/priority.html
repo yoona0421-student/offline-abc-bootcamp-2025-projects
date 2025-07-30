@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TODO LIST</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>TODO LIST</h1>
+        <div id="date-weather">
+            <p id="current-date"></p>
+            <p id="current-weather"></p>
+        </div>
+        <ul id="priorityList"></ul>
+        <div id="memoModal" class="hidden">
+            <h3>메모 작성</h3>
+            <textarea id="memoContent" placeholder="메모를 입력하세요"></textarea>
+            <div class="btn-row">
+                <button id="saveMemo">저장</button>
+                <button id="closeMemo">닫기</button>
+            </div>
+        </div>
+    </div>
+    <script src="priority.js"></script>
+</body>
+</html>

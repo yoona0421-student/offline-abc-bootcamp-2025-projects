@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>감정분석 계획</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>집중력 기반 하루 계획 추천기</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>🧠 집중력 기반 하루 추천기</h1>
+    <p>10개의 질문에 답해 집중 상태를 점수로 확인하고, 일정에 맞는 조언을 받아보세요.</p>
+
+    <form id="quiz-form">
+      <!-- 질문 1~10 -->
+      <div class="question">
+        <p>1. 아침에 상쾌하게 일어났나요?</p>
+        <label><input type="radio" name="q1" value="1" required /> 전혀 그렇지 않다</label><br>
+        <label><input type="radio" name="q1" value="2" /> 그렇지 않다</label><br>
+        <label><input type="radio" name="q1" value="3" /> 보통이다</label><br>
+        <label><input type="radio" name="q1" value="4" /> 그렇다</label><br>
+        <label><input type="radio" name="q1" value="5" /> 완전 그렇다</label>
+      </div>
+      <div class="question">
+        <p>2. 현재 에너지는 충분한가요?</p>
+        <label><input type="radio" name="q2" value="1" required /> 전혀 그렇지 않다</label><br>
+        <label><input type="radio" name="q2" value="2" /> 그렇지 않다</label><br>
+        <label><input type="radio" name="q2" value="3" /> 보통이다</label><br>
+        <label><input type="radio" name="q2" value="4" /> 그렇다</label><br>
+        <label><input type="radio" name="q2" value="5" /> 완전 그렇다</label>
+      </div>
+      <div class="question">
+        <p>3. 오늘 집중이 잘 될 것 같나요?</p>
+        <label><input type="radio" name="q3" value="1" required /> 전혀 그렇지 않다</label><br>
+        <label><input type="radio" name="q3" value="2" /> 그렇지 않다</label><br>
+        <label><input type="radio" name="q3" value="3" /> 보통이다</label><br>
+        <label><input type="radio" name="q3" value="4" /> 그렇다</label><br>
+        <label><input type="radio" name="q3" value="5" /> 완전 그렇다</label>
+      </div>
+      <div class="question">
+        <p>4. 몸 상태가 가볍고 좋은가요?</p>
+        <label><input type="radio" name="q4" value="1" required /> 전혀 그렇지 않다</label><br>
+        <label><input type="radio" name="q4" value="2" /> 그렇지 않다</label><br>
+        <label><input type="radio" name="q4" value="3" /> 보통이다</label><br>
+        <label><input type="radio" name="q4" value="4" /> 그렇다</label><br>
+        <label><input type="radio" name="q4" value="5" /> 완전 그렇다</label>
+      </div>
+      <div class="question">
+        <p>5. 마음이 평온하고 안정적인가요?</p>
+        <label><input type="radio" name="q5" value="1" required /> 전혀 그렇지 않다</label><br>
+        <label><input type="radio" name="q5" value="2" /> 그렇지 않다</label><br>
+        <label><input type="radio" name="q5" value="3" /> 보통이다</label><br>
+        <label><input type="radio" name="q5" value="4" /> 그렇다</label><br>
+        <label><input type="radio" name="q5" value="5" /> 완전 그렇다</label>
+      </div>
+      <div class="question">
+        <p>6. 최근 수면 상태는 원활한가요?</p>
+        <label><input type="radio" name="q6" value="1" required /> 전혀 그렇지 않다</label><br>
+        <label><input type="radio" name="q6" value="2" /> 그렇지 않다</label><br>
+        <label><input type="radio" name="q6" value="3" /> 보통이다</label><br>
+        <label><input type="radio" name="q6" value="4" /> 그렇다</label><br>
+        <label><input type="radio" name="q6" value="5" /> 완전 그렇다</label>
+      </div>
+      <div class="question">
+        <p>7. 최근 식사는 규칙적으로 이루어지고 있나요?</p>
+        <label><input type="radio" name="q7" value="1" required /> 전혀 그렇지 않다</label><br>
+        <label><input type="radio" name="q7" value="2" /> 그렇지 않다</label><br>
+        <label><input type="radio" name="q7" value="3" /> 보통이다</label><br>
+        <label><input type="radio" name="q7" value="4" /> 그렇다</label><br>
+        <label><input type="radio" name="q7" value="5" /> 완전 그렇다</label>
+      </div>
+      <div class="question">
+        <p>8. 지금 컨디션은 좋은 편인가요?</p>
+        <label><input type="radio" name="q8" value="1" required /> 전혀 그렇지 않다</label><br>
+        <label><input type="radio" name="q8" value="2" /> 그렇지 않다</label><br>
+        <label><input type="radio" name="q8" value="3" /> 보통이다</label><br>
+        <label><input type="radio" name="q8" value="4" /> 그렇다</label><br>
+        <label><input type="radio" name="q8" value="5" /> 완전 그렇다</label>
+      </div>
+      <div class="question">
+        <p>9. 외출할 의향이 있나요?</p>
+        <label><input type="radio" name="q9" value="1" required /> 전혀 그렇지 않다</label><br>
+        <label><input type="radio" name="q9" value="2" /> 그렇지 않다</label><br>
+        <label><input type="radio" name="q9" value="3" /> 보통이다</label><br>
+        <label><input type="radio" name="q9" value="4" /> 그렇다</label><br>
+        <label><input type="radio" name="q9" value="5" /> 완전 그렇다</label>
+      </div>
+      <div class="question">
+        <p>10. 오늘 하루에 기대가 되시나요?</p>
+        <label><input type="radio" name="q10" value="1" required /> 전혀 그렇지 않다</label><br>
+        <label><input type="radio" name="q10" value="2" /> 그렇지 않다</label><br>
+        <label><input type="radio" name="q10" value="3" /> 보통이다</label><br>
+        <label><input type="radio" name="q10" value="4" /> 그렇다</label><br>
+        <label><input type="radio" name="q10" value="5" /> 완전 그렇다</label>
+      </div>
+
+      <button type="submit">오늘 일정 추천받기</button>
+    </form>
+
+    <button id="showMySchedule">나의 일정 보기</button>
+    <div id="mySchedule" class="hidden"></div>
+
+    <div id="result" class="hidden"></div>
+  </div>
+
+  <script>
+    document.getElementById("quiz-form").addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      let totalScore = 0;
+      for (let i = 1; i <= 10; i++) {
+        const value = document.querySelector(`input[name="q${i}"]:checked`);
+        totalScore += parseInt(value.value);
+      }
+
+      let message = "";
+
+      if (totalScore <= 10) {
+        message = `😵 컨디션 최악입니다. 휴식을 최우선으로 하세요.`;
+      } else if (totalScore <= 20) {
+        message = `😟 에너지가 낮습니다. 가벼운 활동만 시도해보세요.`;
+      } else if (totalScore <= 30) {
+        message = `🙂 평균적인 컨디션입니다. 오전 중심으로 활동해보세요.`;
+      } else if (totalScore <= 40) {
+        message = `💪 꽤 좋은 상태입니다! 효율적으로 활동할 수 있어요.`;
+      } else {
+        message = `🚀 최고의 컨디션입니다! 적극적으로 활동해보세요.`;
+      }
+
+      const resultDiv = document.getElementById("result");
+      resultDiv.textContent = message;
+      resultDiv.classList.remove("hidden");
+    });
+
+    document.getElementById('showMySchedule').addEventListener('click', function() {
+    const myScheduleDiv = document.getElementById('mySchedule');
+    const schedules = JSON.parse(localStorage.getItem('schedules')) || [];
+    myScheduleDiv.innerHTML = '<ul>';
+    schedules.forEach(item => {
+        const li = document.createElement('li');
+        li.textContent = `[${item.type}] ${item.task} - 예상 ${item.duration}분`;
+        myScheduleDiv.appendChild(li);
+    });
+    myScheduleDiv.innerHTML += '</ul>';
+    myScheduleDiv.classList.remove('hidden');
+});
+    
+  </script>
+</body>
+<style>
+body {
+    background-image: url('background.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+</style>
+</html>
