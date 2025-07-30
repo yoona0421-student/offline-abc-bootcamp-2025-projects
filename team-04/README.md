@@ -10,9 +10,9 @@
 
 cd emotion-detector/backend
 python -m venv venv
-# Windows
+#Windows
 venv\Scripts\activate
-# macOS/Linux
+#macOS/Linux
 source venv/bin/activate
 pip install flask python-dotenv flask-cors openai
 python app.py
