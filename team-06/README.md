@@ -35,7 +35,7 @@
 
 | 메인 화면 | 상세 정보 화면 |
 | :----------------------------------------------------------: | :----------------------------------------------------------: |
-| <img src="여기에_메인화면_이미지_경로.png" alt="메인 화면" width="400"> | <img src="여기에_상세화면_이미지_경로.png" alt="상세 화면" width="400"> |
+| <img width="1323" height="858" alt="Image" src="https://github.com/user-attachments/assets/ccfdf51f-d7a5-4da9-96e0-e1469cb5afad" /> | <img width="1324" height="853" alt="Image" src="https://github.com/user-attachments/assets/b9dfdeab-5d60-460b-a208-51bd6629b083" /> |
 
 <br>
 🚀 향후 개선 과제
