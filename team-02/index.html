@@ -170,6 +170,14 @@
             <button id="show-lookbooks">저장된 목록</button>
             <button id="clear-lookbook">피팅룸 초기화</button>
         </div>
+        <div style="margin-top: 16px; padding: 12px; background: #f8f9fa; border-radius: 6px; font-size: 13px; color: #666; text-align: left;">
+            <strong>💡 사용법:</strong><br>
+            • 옷 이미지 드래그: 위치 이동<br>
+            • Shift + 드래그: 크기 조절<br>
+            • 마우스 휠: 크기 조절<br>
+            • 우하단 핸들: 크기 조절<br>
+            • 🗑️ 버튼: 삭제
+        </div>
         <div id="lookbook-modal" style="display:none; position:fixed; left:0; top:0; width:100vw; height:100vh; background:rgba(0,0,0,0.3); z-index:99999; align-items:center; justify-content:center;">
             <div style="background:#fff; border-radius:12px; padding:32px; min-width:320px; max-width:90vw; max-height:80vh; overflow:auto; box-shadow:0 4px 24px rgba(0,0,0,0.15);">
                 <h2 style="margin-top:0;">저장된 룩북 목록</h2>
@@ -343,9 +351,9 @@
         }
     }
 
-    // 드래그 & 크기 조절 기능 (휠/핸들)
+    // 드래그 & 크기 조절 기능 (휠/핸들/클릭드래그)
     function addDragAndResize(clothes) {
-        let isDragging = false, isResizing = false;
+        let isDragging = false, isResizing = false, isDirectResize = false;
         let startX, startY, startLeft, startTop, startWidth;
 
         // 크기 조절 핸들 추가
@@ -355,6 +363,18 @@
 
         clothes.addEventListener('mousedown', function(e) {
             if (e.target === handle) return;
+            
+            // Shift 키를 누르고 있으면 크기 조절 모드
+            if (e.shiftKey) {
+                isDirectResize = true;
+                clothes.classList.add('selected');
+                startX = e.clientX;
+                startY = e.clientY;
+                startWidth = clothes.offsetWidth;
+                document.body.style.cursor = 'se-resize';
+                return;
+            }
+            
             isDragging = true;
             clothes.classList.add('selected');
             startX = e.clientX;
@@ -376,12 +396,22 @@
                 let newWidth = Math.max(40, startWidth + dx);
                 clothes.style.width = newWidth + 'px';
             }
+            if (isDirectResize) {
+                const dx = e.clientX - startX;
+                const dy = e.clientY - startY;
+                // 대각선 거리를 기준으로 크기 조절
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                const direction = dx + dy > 0 ? 1 : -1;
+                let newWidth = Math.max(40, startWidth + (distance * direction * 0.5));
+                clothes.style.width = newWidth + 'px';
+            }
         });
 
         document.addEventListener('mouseup', function(e) {
-            if (isDragging || isResizing) {
+            if (isDragging || isResizing || isDirectResize) {
                 isDragging = false;
                 isResizing = false;
+                isDirectResize = false;
                 clothes.classList.remove('selected');
                 document.body.style.cursor = '';
             }

@@ -4,10 +4,16 @@
 - 김예진
 - 김유진
 
+## 링크
+
+- 마인드맵 : https://mapify.so/share-link/az0Y85JtCR
+- 피그마 : https://www.figma.com/board/aVSpFmBfFFYJEoQP9NzBdp/%EC%8A%A4%ED%8B%B0%EC%BB%A4%ED%95%8F?node-id=40-135&t=6aWAVtTaEnYstQwF-1
+
+
 
 # 스티커핏(StickerFit) - 디지털 아날로그 감성 가상 피팅룸
 
-> _아날로그 공책과 스티커 놀이의 감성을 담은, 자유로운 가상 피팅 웹 서비스_
+> _아날로그 공책과 스티커 놀이의 감성을 담은(으려고 한), 자유로운 가상 피팅 웹 서비스_
 
 ## 📖 프로젝트 개요
 
