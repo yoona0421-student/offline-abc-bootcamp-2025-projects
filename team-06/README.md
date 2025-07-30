@@ -36,7 +36,8 @@
 | 메인 화면 | 상세 정보 화면 |
 | :----------------------------------------------------------: | :----------------------------------------------------------: |
 | <img width="1323" height="858" alt="Image" src="https://github.com/user-attachments/assets/ccfdf51f-d7a5-4da9-96e0-e1469cb5afad" /> | <img width="1324" height="853" alt="Image" src="https://github.com/user-attachments/assets/b9dfdeab-5d60-460b-a208-51bd6629b083" /> |
-
+| <img width="567" height="876" alt="Image" src="https://github.com/user-attachments/assets/43cb7d53-8127-4627-b025-8dccfdfe0607" /> | <img width="437" height="901" alt="Image" src="https://github.com/user-attachments/assets/9ace36c7-4d5a-4aba-acd3-da12e60276b1" /> | 
+<img width="315" height="930" alt="Image" src="https://github.com/user-attachments/assets/1736a347-ca70-4534-b63d-07791a34701f" /> |
 <br>
 🚀 향후 개선 과제
 현재 버전은 로컬 환경에서 가상 데이터로 구동되는 서버리스(Serverless) 프로토타입입니다. 추후 다음과 같은 기능을 포함하여 실제 서비스로 확장할 예정입니다.
