@@ -6,22 +6,29 @@
 ### 1. 백엔드 실행
 
 cd emotion-detector/backend
+
 python -m venv venv
+
 #Windows
+
 venv\Scripts\activate
+
 #macOS/Linux
+
 source venv/bin/activate
+
 pip install flask python-dotenv flask-cors openai
+
 python app.py
+
 확인:
 터미널에 Running on http://0.0.0.0:5000/ 메시지가 출력되는지 확인하세요.
 
 ### 2. 프론트엔드 실행
-bash
-복사
-편집
 cd emotion-detector/frontend
+
 python -m http.server 8000
+
 브라우저에서 http://localhost:8000 을 열어 챗 UI가 표시되는지 확인합니다.
 
 ### 3. 동작 테스트
