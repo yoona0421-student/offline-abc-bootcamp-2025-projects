@@ -17,7 +17,7 @@
       font-weight: bold;
       margin-bottom: 30px;
       letter-spacing: 1px;
-      line-height: 2;
+      line-height: 1.5; /* Line height 조정 */
       text-shadow: 1px 1px #ffffff;
     }
     h2 {
@@ -38,6 +38,16 @@
       font-size: 0.75rem;
       padding: 10px;
       margin: 10px;
+      border: 2px solid #000;
+      background-color: #ffffff;
+      cursor: pointer;
+    }
+    input:focus, button:focus {
+      outline: none;
+      border-color: #ff66a3;
+    }
+    button:active {
+      background-color: #eee;
     }
     #start-screen, #game-screen {
       display: none;
@@ -89,21 +99,21 @@
 <body>
   <div id="start-screen">
     <h1>🐣 Tap the egg to hatch!</h1>
-    <img id="egg-img" src="C:\\work\\abc-bootcamp-2025\\AI-Mini-Project\\image\\egg_idle.png" alt="Egg" />
+    <img id="egg-img" src="image/egg_idle.png" alt="Egg" />
   </div>
 
   <div id="game-screen">
     <div id="emotion-bubble">
       <p id="emotion-text">Status: ...</p>
     </div>
-    <img id="pet-img" src="C:\\work\\abc-bootcamp-2025\\AI-Mini-Project\\image\\cat_idle.png" alt="Pixel Pet" />
+    <img id="pet-img" src="image/cat_idle.png" alt="Pixel Pet" />
 
     <h2 id="pet-name-label"></h2>
 
     <div id="name-container">
       <p>Name your pet:</p>
       <input type="text" id="name-input" placeholder="Enter name" />
-      <button onclick="confirmName()">OK</button>
+      <button id="name-confirm-button">OK</button>
     </div>
 
     <h1 id="hatched-message" style="display: none;">
@@ -111,160 +121,232 @@
     </h1>
 
     <div class="action-buttons" style="display: none;">
-      <button id="feed-button" onclick="feedPet()">Feed 🍎</button>
-      <button id="sleep-button" onclick="sleepPet()">Sleep 💤</button>
-      <button id="health-button" onclick="playWithPet()">Play 🎮</button>
+      <button id="feed-button">Feed 🍎</button>
+      <button id="sleep-button">Sleep 💤</button>
+      <button id="play-button">Play 🎮</button>
     </div>
 
     <div id="caption"></div>
   </div>
 
-  <audio id="hatch-sound" src="C:\\work\\abc-bootcamp-2025\\AI-Mini-Project\\sound\\hatch.mp3" preload="auto"></audio>
+  <audio id="hatch-sound" src="sound/hatch.mp3" preload="auto"></audio>
 
   <script>
-    const eggImg = document.getElementById("egg-img");
-    const startScreen = document.getElementById("start-screen");
-    const gameScreen = document.getElementById("game-screen");
-    const nameInput = document.getElementById("name-input");
-    const hatchedName = document.getElementById("hatched-name");
-    const hatchedMessage = document.getElementById("hatched-message");
-    const hatchSound = document.getElementById("hatch-sound");
-    const emotionText = document.getElementById("emotion-text");
-    const emotionBubble = document.getElementById("emotion-bubble");
-    const petImg = document.getElementById("pet-img");
-    const petNameLabel = document.getElementById("pet-name-label");
-    const feedButton = document.getElementById("feed-button");
-    const sleepButton = document.getElementById("sleep-button");
-    const healthButton = document.getElementById("health-button");
-    const actionButtons = document.querySelector(".action-buttons");
-    const caption = document.getElementById("caption");
+    // 상수 정의 (매직 스트링 제거)
+    const PET_STATUS = {
+      IDLE: "Idle",
+      HUNGRY: "Hungry",
+      SLEEPY: "Sleepiness",
+      BORED: "Bored",
+      FULL: "Full",
+      AWAKE: "Awake",
+      EXCITED: "Excited",
+      HATCHING: "Hatching" // 알 깨는 중 상태 추가
+    };
 
-    let clickCount = 0;
-    let emotionInterval = null;
-    let currentNeed = "";
-    let currentNeedHandled = true;
-    let petName = "Your pet";
+    // 이미지 경로를 객체로 관리
+    const IMAGE_PATHS = {
+      EGG_IDLE: "image/egg_idle.png",
+      EGG_CRACKING: "image/egg_cracking.png",
+      EGG_BROKEN: "image/egg_broken.png",
+      CAT_IDLE: "image/cat_idle.png",
+      CAT_HUNGRY: "image/cat_hungry.png",
+      CAT_SLEEPY: "image/cat_sleepy.png",
+      CAT_BORED: "image/cat_bored.png",
+      CAT_FULL: "image/cat_full.png",
+      CAT_AWAKE: "image/cat_awake.png",
+      CAT_HAPPY: "image/cat_happy.png"
+    };
 
-    function showRandomEmotion() {
-      if (!currentNeedHandled) return;
-      const emotions = ["Hunger", "Sleepiness", "Bored"];
-      currentNeed = emotions[Math.floor(Math.random() * emotions.length)];
-      updatePetStatus();
-      currentNeedHandled = false;
-    }
+    // 게임 로직을 캡슐화하는 클래스
+    class PixelPetGame {
+      constructor() {
+        this.elements = {
+          eggImg: document.getElementById("egg-img"),
+          startScreen: document.getElementById("start-screen"),
+          gameScreen: document.getElementById("game-screen"),
+          nameInput: document.getElementById("name-input"),
+          nameConfirmButton: document.getElementById("name-confirm-button"), // 버튼 ID 추가
+          hatchedName: document.getElementById("hatched-name"),
+          hatchedMessage: document.getElementById("hatched-message"),
+          hatchSound: document.getElementById("hatch-sound"),
+          emotionText: document.getElementById("emotion-text"),
+          emotionBubble: document.getElementById("emotion-bubble"),
+          petImg: document.getElementById("pet-img"),
+          petNameLabel: document.getElementById("pet-name-label"),
+          feedButton: document.getElementById("feed-button"),
+          sleepButton: document.getElementById("sleep-button"),
+          playButton: document.getElementById("play-button"), // ID 수정
+          actionButtons: document.querySelector(".action-buttons"),
+          caption: document.getElementById("caption"),
+          nameContainer: document.getElementById("name-container")
+        };
 
-    function updatePetStatus() {
-      emotionText.textContent = `Status: ${currentNeed}`;
-      updatePetImage();
-    }
+        this.clickCount = 0;
+        this.emotionInterval = null;
+        this.currentPetNeed = PET_STATUS.IDLE; // 초기 펫 상태 설정
+        this.petName = "Your pet"; // 기본 이름
 
-    function updatePetImage() {
-      switch (currentNeed) {
-        case "Hunger":
-          petImg.src = "C:\\work\\abc-bootcamp-2025\\AI-Mini-Project\\image\\cat_hungry.png";
-          break;
-        case "Sleepiness":
-          petImg.src = "C:\\work\\abc-bootcamp-2025\\AI-Mini-Project\\image\\cat_sleepy.png";
-          break;
-        case "Bored":
-          petImg.src = "C:\\work\\abc-bootcamp-2025\\AI-Mini-Project\\image\\cat_bored.png";
-          break;
-        case "Full":
-          petImg.src = "C:\\work\\abc-bootcamp-2025\\AI-Mini-Project\\image\\cat_full.png";
-          break;
-        case "Awake":
-          petImg.src = "C:\\work\\abc-bootcamp-2025\\AI-Mini-Project\\image\\cat_awake.png";
-          break;
-        case "Excited":
-          petImg.src = "C:\\work\\abc-bootcamp-2025\\AI-Mini-Project\\image\\cat_happy.png";
-          break;
-        default:
-          petImg.src = "C:\\work\\abc-bootcamp-2025\\AI-Mini-Project\\image\\cat_idle.png";
+        this.initGame();
+        this.addEventListeners();
+      }
+
+      initGame() {
+        this.elements.startScreen.style.display = "block";
+        this.updatePetImage(); // 초기 이미지 설정
+        this.updatePetStatus(); // 초기 상태 텍스트 설정
+      }
+
+      addEventListeners() {
+        this.elements.eggImg.addEventListener("click", this.handleEggClick.bind(this));
+        this.elements.nameConfirmButton.addEventListener("click", this.confirmName.bind(this)); // 이벤트 리스너 변경
+        this.elements.feedButton.addEventListener("click", this.feedPet.bind(this));
+        this.elements.sleepButton.addEventListener("click", this.sleepPet.bind(this));
+        this.elements.playButton.addEventListener("click", this.playWithPet.bind(this));
+      }
+
+      // 펫의 필요 상태를 랜덤으로 보여주는 함수
+      showRandomPetNeed() {
+        // 현재 니즈가 해결되지 않았다면 새로운 니즈를 발생시키지 않음
+        if (this.currentPetNeed === PET_STATUS.HUNGRY ||
+            this.currentPetNeed === PET_STATUS.SLEEPY ||
+            this.currentPetNeed === PET_STATUS.BORED) {
+          return;
+        }
+
+        const needs = [PET_STATUS.HUNGRY, PET_STATUS.SLEEPY, PET_STATUS.BORED];
+        this.currentPetNeed = needs[Math.floor(Math.random() * needs.length)];
+        this.updatePetStatus();
+      }
+
+      // 펫 상태 UI 업데이트
+      updatePetStatus() {
+        this.elements.emotionText.textContent = `Status: ${this.currentPetNeed}`;
+        this.updatePetImage();
+      }
+
+      // 펫 이미지 업데이트
+      updatePetImage() {
+        let imageSrc;
+        switch (this.currentPetNeed) {
+          case PET_STATUS.HUNGRY:
+            imageSrc = IMAGE_PATHS.CAT_HUNGRY;
+            break;
+          case PET_STATUS.SLEEPY:
+            imageSrc = IMAGE_PATHS.CAT_SLEEPY;
+            break;
+          case PET_STATUS.BORED:
+            imageSrc = IMAGE_PATHS.CAT_BORED;
+            break;
+          case PET_STATUS.FULL:
+            imageSrc = IMAGE_PATHS.CAT_FULL;
+            break;
+          case PET_STATUS.AWAKE:
+            imageSrc = IMAGE_PATHS.CAT_AWAKE;
+            break;
+          case PET_STATUS.EXCITED:
+            imageSrc = IMAGE_PATHS.CAT_HAPPY;
+            break;
+          default:
+            imageSrc = IMAGE_PATHS.CAT_IDLE;
+        }
+        this.elements.petImg.src = imageSrc;
+      }
+
+      // 캡션 메시지 표시
+      showCaption(message) {
+        this.elements.caption.textContent = message;
+        this.elements.caption.style.display = "block";
+        setTimeout(() => {
+          this.elements.caption.style.display = "none";
+        }, 3000);
+      }
+
+      // 펫 이름 확정
+      confirmName() {
+        const name = this.elements.nameInput.value.trim();
+        if (name === "") {
+          this.showCaption("Please enter a name!");
+          return;
+        }
+        this.petName = name;
+        this.elements.hatchedName.textContent = name;
+        this.elements.petNameLabel.textContent = name;
+
+        this.elements.hatchedMessage.style.display = "block";
+        this.elements.nameContainer.style.display = "none";
+        this.elements.emotionBubble.style.display = "none";
+        this.elements.actionButtons.style.display = "none";
+
+        clearInterval(this.emotionInterval); // 기존 인터벌 중지
+
+        setTimeout(() => {
+          this.elements.hatchedMessage.style.display = "none";
+          this.elements.emotionBubble.style.display = "block";
+          this.elements.actionButtons.style.display = "block";
+          this.currentPetNeed = PET_STATUS.IDLE; // 이름 입력 후 초기 상태로 변경
+          this.updatePetStatus();
+          this.emotionInterval = setInterval(this.showRandomPetNeed.bind(this), 10000); // 10초마다 랜덤 니즈 발생
+        }, 3000);
+      }
+
+      // 펫 먹이주기
+      feedPet() {
+        if (this.currentPetNeed === PET_STATUS.HUNGRY) {
+          this.currentPetNeed = PET_STATUS.FULL;
+          this.updatePetStatus();
+          this.showCaption(`${this.petName} has eaten and feels full!`);
+        } else {
+          this.showCaption(`${this.petName} is not hungry right now.`);
+        }
+      }
+
+      // 펫 재우기
+      sleepPet() {
+        if (this.currentPetNeed === PET_STATUS.SLEEPY) {
+          this.currentPetNeed = PET_STATUS.AWAKE;
+          this.updatePetStatus();
+          this.showCaption(`${this.petName} had a nice nap and is now awake!`);
+        } else {
+          this.showCaption(`${this.petName} is not sleepy right now.`);
+        }
+      }
+
+      // 펫 놀아주기
+      playWithPet() {
+        if (this.currentPetNeed === PET_STATUS.BORED) {
+          this.currentPetNeed = PET_STATUS.EXCITED;
+          this.updatePetStatus();
+          this.showCaption(`${this.petName} is excited after playing!`);
+        } else {
+          this.showCaption(`${this.petName} doesn’t want to play right now.`);
+        }
+      }
+
+      // 알 클릭 핸들러
+      handleEggClick() {
+        this.clickCount++;
+        if (this.clickCount <= 2) {
+          this.elements.eggImg.src = IMAGE_PATHS.EGG_IDLE; // 굳이 다시 할당할 필요는 없지만 일관성을 위해
+        } else if (this.clickCount <= 4) {
+          this.elements.eggImg.src = IMAGE_PATHS.EGG_CRACKING;
+        } else if (this.clickCount === 5) {
+          this.elements.eggImg.src = IMAGE_PATHS.EGG_BROKEN;
+        } else if (this.clickCount === 6) {
+          this.elements.hatchSound.play();
+          this.elements.startScreen.style.display = "none";
+          this.elements.gameScreen.style.display = "block";
+          // 부화 후 바로 이름 입력 화면으로
+          this.elements.nameContainer.style.display = "block";
+          this.elements.petImg.src = IMAGE_PATHS.CAT_IDLE; // 부화 시 기본 펫 이미지
+        }
       }
     }
 
-    function showCaption(message) {
-      caption.textContent = message;
-      caption.style.display = "block";
-      setTimeout(() => {
-        caption.style.display = "none";
-      }, 3000);
-    }
-
-    function confirmName() {
-      const name = nameInput.value.trim();
-      if (name === "") {
-        showCaption("Please enter a name!");
-        return;
-      }
-      petName = name;
-      hatchedName.textContent = name;
-      petNameLabel.textContent = name;
-      hatchedMessage.style.display = "block";
-      document.getElementById("name-container").style.display = "none";
-      emotionBubble.style.display = "none";
-      actionButtons.style.display = "none";
-
-      clearInterval(emotionInterval);
-
-      setTimeout(() => {
-        hatchedMessage.style.display = "none";
-        emotionBubble.style.display = "block";
-        actionButtons.style.display = "block";
-        showRandomEmotion();
-        emotionInterval = setInterval(showRandomEmotion, 10000);
-      }, 3000);
-    }
-
-    function feedPet() {
-      if (currentNeed === "Hunger") {
-        currentNeed = "Full";
-        currentNeedHandled = true;
-        updatePetStatus();
-        showCaption(`${petName} has eaten and feels full!`);
-      } else {
-        showCaption(`${petName} is not hungry right now.`);
-      }
-    }
-
-    function sleepPet() {
-      if (currentNeed === "Sleepiness") {
-        currentNeed = "Awake";
-        currentNeedHandled = true;
-        updatePetStatus();
-        showCaption(`${petName} had a nice nap and is now awake!`);
-      } else {
-        showCaption(`${petName} is not sleepy right now.`);
-      }
-    }
-
-    function playWithPet() {
-      if (currentNeed === "Bored") {
-        currentNeed = "Excited";
-        currentNeedHandled = true;
-        updatePetStatus();
-        showCaption(`${petName} is excited after playing!`);
-      } else {
-        showCaption(`${petName} doesn’t want to play right now.`);
-      }
-    }
-
-    eggImg.addEventListener("click", () => {
-      clickCount++;
-      if (clickCount <= 2) {
-        eggImg.src = "C:\\work\\abc-bootcamp-2025\\AI-Mini-Project\\image\\egg_idle.png";
-      } else if (clickCount <= 4) {
-        eggImg.src = "C:\\work\\abc-bootcamp-2025\\AI-Mini-Project\\image\\egg_cracking.png";
-      } else if (clickCount === 5) {
-        eggImg.src = "C:\\work\\abc-bootcamp-2025\\AI-Mini-Project\\image\\egg_broken.png";
-      } else if (clickCount === 6) {
-        hatchSound.play();
-        startScreen.style.display = "none";
-        gameScreen.style.display = "block";
-      }
+    // DOMContentLoaded 이벤트 발생 시 게임 인스턴스 생성
+    document.addEventListener("DOMContentLoaded", () => {
+      new PixelPetGame();
     });
-
-    startScreen.style.display = "block";
   </script>
 </body>
 </html>

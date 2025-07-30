@@ -2,70 +2,116 @@
 
 ## 멤버: 민재홍 장재훈 정윤아
 
-# Project2: 인사이드아웃 감정 기반 음악 추천 웹앱 🎧
+## project2 - 인사이드아웃 감정 기반 음악 추천 웹앱 🎧
 
-## 📌 프로젝트 소개
+Disney·Pixar **인사이드아웃** 캐릭터(기쁨이, 슬픔이, 버럭이, 까칠이, 소심이, 불안이, 부럽이, 따분이, 당황이)의 구슬을 클릭하거나 직접 감정을 입력하면 **OpenAI GPT**가 감정에 어울리는 **한국어 노래 3 곡**을 추천해 주는 웹 애플리케이션입니다.
 
-이 프로젝트는 **인사이드아웃 캐릭터**(기쁨이, 슬픔이, 버럭이, 까칠이, 소심이, 불안이, 부럽이, 따분이, 당황이)를 활용하여  
-사용자의 감정에 맞는 음악을 추천해주는 웹 애플리케이션입니다.
-
-사용자는 캐릭터 구슬을 클릭하거나, 직접 감정을 입력해 AI에게 분석을 요청할 수 있습니다.
-
-- **Frontend:** HTML, CSS, JavaScript  
-- **Backend:** Node.js (Express), OpenAI API  
-- **특징:** 감정별 캐릭터 이미지, 네온 효과, 반응형 모바일 템플릿, 실시간 음악 추천
+- **Frontend:** HTML · CSS · JavaScript  
+- **Backend:** Node.js (Express) · OpenAI Chat API  
+- **특징:** 캐릭터 네온 UI · 스마트폰 프레임 · 반응형 · 실시간 YouTube Music 검색 링크
 
 ---
 
-## 📁 주요 파일 구조 및 역할
+## 📁 주요 파일 구조
 
-| 파일/폴더               | 설명 |
-|-------------------------|------|
-| `index.html`            | 메인 웹페이지. 감정 선택, 추천 결과, UI/UX 전반 담당 |
-| `server.js`             | Node.js Express 서버. 감정 분석 및 음악 추천 API 제공 |
-| `images/`               | 인사이드아웃 캐릭터 및 배경 이미지 폴더 |
-| ├─ `joy.png`            | 기쁨이 캐릭터 이미지 |
-| ├─ `sadness.png`        | 슬픔이 캐릭터 이미지 |
-| ├─ `anger.png`          | 버럭이 캐릭터 이미지 |
-| ├─ `disgust.png`        | 까칠이 캐릭터 이미지 |
-| ├─ `fear.png`           | 소심이 캐릭터 이미지 |
-| ├─ `anxiety.png`        | 불안이 캐릭터 이미지 |
-| ├─ `envy.png`           | 부럽이 캐릭터 이미지 |
-| ├─ `boredom.png`        | 따분이 캐릭터 이미지 |
-| ├─ `embarrassment.png`  | 당황이 캐릭터 이미지 |
-| ├─ `chat.png`           | 추천 카드 배경 이미지 |
-| └─ `backgrouund.jpg`    | 웹앱 바깥 배경 이미지 |
-| `.env`                  | OpenAI API 키 등 환경 변수 파일 (직접 생성 필요) |
-| `package.json`          | Node.js 프로젝트 의존성 및 실행 설정 |
-| `README.md`             | 프로젝트 설명 문서 (본 파일) |
+```text
+insideout-music/
+│  server.js          # Express 서버 (API 라우트)
+│  .env               # OpenAI API 키 등 환경 변수
+│  package.json       # Node.js 의존성
+│  README.md          # 프로젝트 설명 (본 파일)
+│
+├─public/             # 정적 파일 루트
+│   index.html        # 메인 페이지
+│   style.css         # 스타일 (index.html 내 인라인인 경우 없음)
+│   script.js         # 프런트 JS (index.html 내 스크립트일 수도 있음)
+│
+├─public/fonts/       # GmarketSans TTF 3종
+│   GmarketSansTTFLight.ttf
+│   GmarketSansTTFMedium.ttf
+│   GmarketSansTTFBold.ttf
+│
+└─public/images/      # 캐릭터 & UI 이미지
+    joy.png
+    sadness.png
+    anger.png
+    disgust.png
+    fear.png
+    anxiety.png
+    envy.png
+    boredom.png
+    embarrassment.png
+    chat.png
+    backgrouund.jpg
+```
+
+> **경로 주의** : `server.js`에서  
+> ```js
+> app.use(express.static(path.join(__dirname, 'public')));
+> ```  
+> 로 정적 폴더를 지정하므로 `index.html`, `fonts/`, `images/`는 `public/` 하위에 위치해야 합니다.
 
 ---
 
 ## 🌟 주요 기능
 
-### 🎯 감정 구슬 클릭
-- 인사이드아웃 캐릭터 구슬을 클릭하면 해당 감정에 어울리는 음악 3곡을 추천받을 수 있어요.
+| 기능 | 설명 |
+|------|------|
+| 🎯 **감정 구슬 클릭** | 캐릭터 구슬 클릭 → `/api/recommend` 호출 → 감정별 노래 3곡 추천 |
+| ✏️ **직접 감정 입력** | “내 감정이 없어요” → 문장 입력 → `/api/emotion`으로 감정 키워드 추출 후 추천 |
+| 🎵 **추천 결과 카드** | 곡 **제목 – 아티스트** + 🎧 music play 링크(**YouTube Music 검색 페이지**) |
+| 📱 **반응형 UI** | 스마트폰 모양 프레임, 캐릭터별 네온 Glow, 모바일·데스크톱 모두 자연스러운 레이아웃 |
 
-### ✏️ 직접 감정 입력
-- "내 감정이 없어요" 버튼 클릭 → 감정을 문장으로 입력  
-- AI가 감정을 분석해 적절한 곡 추천
+---
 
-### 🎵 추천 결과
-- 곡 제목, 아티스트, 유튜브 뮤직 링크를 카드 형태로 출력  
-- 카드 배경: `chat.png`  
-- `music play` 버튼: 빨간색 강조
+## 🛠️ 사전 준비
 
-### 📱 반응형 UI
-- 모바일 & PC 모두 자연스럽게 보이는 스마트폰 프레임  
-- 감정별 네온 효과, 파스텔톤, 인사이드아웃 스타일 강조
+1. **Node.js 18+** 설치  
+2. 저장소 클론 후 의존성 설치  
+   ```bash
+   npm install
+   ```  
+3. **OpenAI API Key** 발급 → 저장소 루트에 `.env` 생성  
+   ```env
+   OPENAI_API_KEY=sk-xxxx...
+   ```
 
 ---
 
 ## ▶️ 실행 방법
 
-1. **의존성 설치**
-   ```bash
-   npm install
+```bash
+node server.js        # ➜ http://localhost:3000
+```
+
+브라우저에서 `http://localhost:3000` 접속 → 캐릭터 클릭 또는 감정 입력 → 추천 결과 확인.
+
+---
+
+## 🔧 커스터마이징
+
+| 항목 | 위치 · 방법 |
+|------|-------------|
+| 추천 톤 변경 | `server.js` > `emotionPrompts` 객체의 프롬프트 수정 |
+| 추천 곡 수 조정 | `lines.slice(0, 3)` → 원하는 숫자로 수정 |
+| UI 색상·폰트 | `public/index.html` 내 `<style>` 또는 별도 `style.css` |
+| 검색 방식 | `script.js` → `https://music.youtube.com/search?q=…` 부분을 일반 YouTube 링크 또는 다른 스트리밍 API로 변경 |
+
+---
+
+## 📜 라이선스
+
+- **코드** : MIT  
+- **이미지** : Disney / Pixar 인사이드아웃 팬아트 또는 공개 사용 가능 리소스 (배포 시 저작권 확인 필요)  
+- **폰트** : GmarketSans (㈜지마켓 무료 배포, 상업적 사용 가능)  
+- **API** : OpenAI 사용 약관 준수 필수
+
+---
+
+## 🤝 기여
+
+Issue / PR을 통한 버그 제보와 기능 제안을 환영합니다. 😊
+
 
 
 ## project3 - 🗺️ AI 여행 일정 추천기 - 사용 설명서
@@ -217,7 +263,7 @@ GPT에게 다음과 같은 형식을 강제합니다:
 > 문의 또는 개선 제안은 GitHub Issue 또는 이메일로 전달해주세요.
 
 
-# Project4 : 감정 스무고개 웹앱 🔮🕵️‍♂️
+## Project4 : 감정 스무고개 웹앱 🔮🕵️‍♂️
 
 사용자가 **예 / 아니오** 형식으로 답하면 **OpenAI GPT**가 최대 7 개의 질문(스무고개 축약판) 안에 현재 감정을 추측하는 웹 애플리케이션입니다.  
 프런트엔드는 순수 **HTML / CSS / JS**, 백엔드는 **Flask + OpenAI API**로 구성했습니다.
