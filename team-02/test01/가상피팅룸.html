@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>가상 피팅룸</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #f7f7f7;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+            padding: 32px;
+            text-align: center;
+        }
+        h1 {
+            font-family: Georgia, 'Times New Roman', serif;
+            color: #fff;
+            background: #999;
+            padding: 12px 32px;
+            border-radius: 10px;
+            margin-bottom: 24px;
+            text-align: center;
+            display: inline-block;
+            min-width: 0;
+        }
+        .upload-section {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+        .upload-box {
+            flex: none;
+            text-align: left;
+            margin: 0 0;
+        }
+        .upload-box label {
+            font-size: 14px;
+            font-weight: normal;
+            color: #333;
+            background: none;
+            padding: 0;
+        }
+        .upload-box input {
+            margin-top: 6px;
+        }
+        #fitting-room {
+            position: relative;
+            width: 400px;
+            height: 500px;
+            margin: 0 auto;
+            background: #FEF7EC;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: none;
+            border: 1px solid #ccc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        #user-photo {
+            max-height: 500px;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            position: static;
+            display: block;
+            margin: 0 auto;
+        }
+        .button-row {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin: 18px 0 0 0;
+        }
+        .button-row button {
+            border: 1px solid #bbb;
+            background: transparent;
+            color: #333;
+            font-family: inherit;
+            font-size: 14px;
+            padding: 8px 18px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+        .button-row button:hover {
+            border-color: #888;
+        }
+        .tip {
+            display: none;
+        }
+        .clothes {
+            position: absolute;
+            left: 50px;
+            top: 50px;
+            width: 200px;
+            height: auto;
+            cursor: move;
+            z-index: 2;
+            user-select: none;
+        }
+        .clothes.selected {
+            outline: 2px dashed #0078d7;
+        }
+        .resize-handle {
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            background: #fff;
+            border: 2px solid #0078d7;
+            border-radius: 50%;
+            right: -8px;
+            bottom: -8px;
+            cursor: se-resize;
+            z-index: 3;
+        }
+        .clothes-list {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            margin-top: 24px;
+            flex-wrap: wrap;
+        }
+        .clothes-thumb {
+            width: 80px;
+            height: 100px;
+            object-fit: contain;
+            background: #f0f0f0;
+            border-radius: 6px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: border 0.2s;
+        }
+        .clothes-thumb:hover {
+            border: 2px solid #0078d7;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Virtual Fitting Room</h1>
+        <div class="upload-section">
+            <div class="upload-box">
+                <label>전신 사진 업로드<br>
+                    <input type="file" id="photo-upload" accept="image/*">
+                </label>
+            </div>
+            <div class="upload-box">
+                <label>옷 업로드<br>
+                    <input type="file" id="clothes-json-upload" accept="application/json,image/png">
+                </label>
+            </div>
+        </div>
+        <div id="fitting-room">
+            <img id="user-photo" src="" alt="전신 사진" style="display:none;">
+            <!-- 옷 이미지가 여기에 추가됨 -->
+        </div>
+        <div class="button-row">
+            <button id="save-lookbook">룩북 저장</button>
+            <button id="show-lookbooks">저장된 목록</button>
+            <button id="clear-lookbook">피팅룸 초기화</button>
+        </div>
+        <div id="lookbook-modal" style="display:none; position:fixed; left:0; top:0; width:100vw; height:100vh; background:rgba(0,0,0,0.3); z-index:99999; align-items:center; justify-content:center;">
+            <div style="background:#fff; border-radius:12px; padding:32px; min-width:320px; max-width:90vw; max-height:80vh; overflow:auto; box-shadow:0 4px 24px rgba(0,0,0,0.15);">
+                <h2 style="margin-top:0;">저장된 룩북 목록</h2>
+                <div id="lookbook-list"></div>
+                <button id="close-lookbook-modal" style="margin-top:24px;">닫기</button>
+            </div>
+        </div>
+        <div class="clothes-list" id="clothes-list">
+            <!-- 옷 썸네일이 여기에 추가됨 -->
+        </div>
+    </div>
+    <script>
+    // 전신 사진 업로드
+    const photoUpload = document.getElementById('photo-upload');
+    const userPhoto = document.getElementById('user-photo');
+    photoUpload.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(ev) {
+                userPhoto.src = ev.target.result;
+                userPhoto.style.display = 'block';
+                // 전신사진을 localStorage에도 저장 (룩북 미리보기용)
+                localStorage.setItem('user-photo', ev.target.result);
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    // 옷 JSON/PNG 업로드 및 썸네일 표시
+    const clothesJsonUpload = document.getElementById('clothes-json-upload');
+    const clothesList = document.getElementById('clothes-list');
+    let clothesData = [];
+
+    clothesJsonUpload.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        if (file.type === 'application/json') {
+            const reader = new FileReader();
+            reader.onload = function(ev) {
+                try {
+                    clothesData = JSON.parse(ev.target.result);
+                    renderClothesList();
+                } catch (err) {
+                    alert('옷 JSON 파일 형식이 올바르지 않습니다.');
+                }
+            };
+            reader.readAsText(file);
+        } else if (file.type === 'image/png') {
+            const reader = new FileReader();
+            reader.onload = function(ev) {
+                // PNG 파일을 바로 옷 아이템으로 추가
+                const name = prompt('옷 이름을 입력하세요:', '새 옷');
+                const desc = prompt('옷 설명을 입력하세요:', '설명');
+                if (name) {
+                    const item = { name, desc, image: ev.target.result };
+                    clothesData.push(item);
+                    renderClothesList();
+                }
+            };
+            reader.readAsDataURL(file);
+        } else {
+            alert('JSON 또는 PNG 파일만 업로드 가능합니다.');
+        }
+    });
+
+    function renderClothesList() {
+        clothesList.innerHTML = '';
+        clothesData.forEach((item, idx) => {
+            const div = document.createElement('div');
+            div.style.display = 'inline-block';
+            div.style.textAlign = 'center';
+            div.style.margin = '8px';
+            // 썸네일
+            const img = document.createElement('img');
+            img.src = item.image;
+            img.className = 'clothes-thumb';
+            img.title = item.name;
+            img.onclick = function() {
+                addClothesToFittingRoom(item);
+            };
+            // 이름/설명
+            const name = document.createElement('div');
+            name.textContent = item.name;
+            name.style.fontWeight = 'bold';
+            name.style.fontSize = '13px';
+            const desc = document.createElement('div');
+            desc.textContent = item.desc;
+            desc.style.fontSize = '12px';
+            desc.style.color = '#888';
+            div.appendChild(img);
+            div.appendChild(name);
+            div.appendChild(desc);
+            clothesList.appendChild(div);
+        });
+    }
+
+    // 옷 이미지를 피팅룸에 추가
+    function addClothesToFittingRoom(item, state) {
+        const fittingRoom = document.getElementById('fitting-room');
+        const clothes = document.createElement('img');
+        clothes.src = item.image;
+        clothes.className = 'clothes';
+        clothes.style.left = state?.left || '100px';
+        clothes.style.top = state?.top || '100px';
+        clothes.style.width = state?.width || '200px';
+        clothes.draggable = false;
+        clothes.setAttribute('data-name', item.name);
+        clothes.setAttribute('data-desc', item.desc);
+        // 툴팁
+        clothes.addEventListener('mouseenter', function(e) {
+            showTooltip(clothes, item.name, item.desc);
+        });
+        clothes.addEventListener('mouseleave', function(e) {
+            hideTooltip();
+        });
+        // 삭제 버튼
+        const delBtn = document.createElement('div');
+        delBtn.innerHTML = '🗑️';
+        delBtn.style.position = 'absolute';
+        delBtn.style.right = '-18px';
+        delBtn.style.top = '-18px';
+        delBtn.style.background = '#fff';
+        delBtn.style.border = '1px solid #ccc';
+        delBtn.style.borderRadius = '50%';
+        delBtn.style.width = '24px';
+        delBtn.style.height = '24px';
+        delBtn.style.display = 'flex';
+        delBtn.style.alignItems = 'center';
+        delBtn.style.justifyContent = 'center';
+        delBtn.style.cursor = 'pointer';
+        delBtn.style.zIndex = '10';
+        delBtn.title = '삭제';
+        delBtn.onclick = function(e) {
+            e.stopPropagation();
+            fittingRoom.removeChild(clothes);
+            hideTooltip();
+        };
+        clothes.appendChild(delBtn);
+        fittingRoom.appendChild(clothes);
+        addDragAndResize(clothes);
+    }
+
+    // 툴팁 표시
+    let tooltipDiv = null;
+    function showTooltip(target, name, desc) {
+        hideTooltip();
+        tooltipDiv = document.createElement('div');
+        tooltipDiv.style.position = 'fixed';
+        tooltipDiv.style.background = '#222';
+        tooltipDiv.style.color = '#fff';
+        tooltipDiv.style.padding = '8px 14px';
+        tooltipDiv.style.borderRadius = '8px';
+        tooltipDiv.style.fontSize = '13px';
+        tooltipDiv.style.zIndex = '9999';
+        tooltipDiv.innerHTML = `<b>${name}</b><br>${desc}`;
+        document.body.appendChild(tooltipDiv);
+        document.addEventListener('mousemove', moveTooltip);
+    }
+    function moveTooltip(e) {
+        if (tooltipDiv) {
+            tooltipDiv.style.left = (e.clientX + 12) + 'px';
+            tooltipDiv.style.top = (e.clientY + 12) + 'px';
+        }
+    }
+    function hideTooltip() {
+        if (tooltipDiv) {
+            document.body.removeChild(tooltipDiv);
+            tooltipDiv = null;
+            document.removeEventListener('mousemove', moveTooltip);
+        }
+    }
+
+    // 드래그 & 크기 조절 기능 (휠/핸들)
+    function addDragAndResize(clothes) {
+        let isDragging = false, isResizing = false;
+        let startX, startY, startLeft, startTop, startWidth;
+
+        // 크기 조절 핸들 추가
+        const handle = document.createElement('div');
+        handle.className = 'resize-handle';
+        clothes.appendChild(handle);
+
+        clothes.addEventListener('mousedown', function(e) {
+            if (e.target === handle) return;
+            isDragging = true;
+            clothes.classList.add('selected');
+            startX = e.clientX;
+            startY = e.clientY;
+            startLeft = parseInt(clothes.style.left);
+            startTop = parseInt(clothes.style.top);
+            document.body.style.cursor = 'move';
+        });
+
+        document.addEventListener('mousemove', function(e) {
+            if (isDragging) {
+                const dx = e.clientX - startX;
+                const dy = e.clientY - startY;
+                clothes.style.left = (startLeft + dx) + 'px';
+                clothes.style.top = (startTop + dy) + 'px';
+            }
+            if (isResizing) {
+                const dx = e.clientX - startX;
+                let newWidth = Math.max(40, startWidth + dx);
+                clothes.style.width = newWidth + 'px';
+            }
+        });
+
+        document.addEventListener('mouseup', function(e) {
+            if (isDragging || isResizing) {
+                isDragging = false;
+                isResizing = false;
+                clothes.classList.remove('selected');
+                document.body.style.cursor = '';
+            }
+        });
+
+        handle.addEventListener('mousedown', function(e) {
+            e.stopPropagation();
+            isResizing = true;
+            clothes.classList.add('selected');
+            startX = e.clientX;
+            startWidth = clothes.offsetWidth;
+            document.body.style.cursor = 'se-resize';
+        });
+
+        // 마우스 휠로 크기 조절
+        clothes.addEventListener('wheel', function(e) {
+            e.preventDefault();
+            let w = clothes.offsetWidth;
+            let delta = e.deltaY < 0 ? 20 : -20;
+            w = Math.max(40, w + delta);
+            clothes.style.width = w + 'px';
+        });
+    }
+
+    // 룩북 저장/불러오기/초기화
+    // 여러 룩북 저장/불러오기/삭제/목록
+    function getLookbooks() {
+        return JSON.parse(localStorage.getItem('lookbooks') || '[]');
+    }
+    function setLookbooks(arr) {
+        localStorage.setItem('lookbooks', JSON.stringify(arr));
+    }
+
+    document.getElementById('save-lookbook').onclick = function() {
+        const fittingRoom = document.getElementById('fitting-room');
+        const clothesEls = fittingRoom.querySelectorAll('.clothes');
+        let lookbook = [];
+        clothesEls.forEach(el => {
+            lookbook.push({
+                name: el.getAttribute('data-name'),
+                desc: el.getAttribute('data-desc'),
+                image: el.src,
+                left: el.style.left,
+                top: el.style.top,
+                width: el.style.width
+            });
+        });
+        let name = prompt('룩북 이름을 입력하세요:', '나의 룩북');
+        if (!name) return;
+        let lookbooks = getLookbooks();
+        lookbooks.push({ name, items: lookbook, date: new Date().toLocaleString() });
+        setLookbooks(lookbooks);
+        alert('룩북이 저장되었습니다!');
+    };
+
+    document.getElementById('show-lookbooks').onclick = function() {
+        const modal = document.getElementById('lookbook-modal');
+        const listDiv = document.getElementById('lookbook-list');
+        listDiv.innerHTML = '';
+        let lookbooks = getLookbooks();
+        if (lookbooks.length === 0) {
+            listDiv.innerHTML = '<p style="color:#888;">저장된 룩북이 없습니다.</p>';
+        } else {
+            // 세로로 나열
+            listDiv.style.display = 'flex';
+            listDiv.style.flexDirection = 'column';
+            listDiv.style.alignItems = 'center';
+            lookbooks.forEach((lb, idx) => {
+                // 미리보기 박스 생성 (이미지만)
+                const previewBox = document.createElement('div');
+                previewBox.style.border = '1px solid #eee';
+                previewBox.style.borderRadius = '8px';
+                previewBox.style.padding = '8px';
+                previewBox.style.marginBottom = '18px';
+                previewBox.style.background = '#fafafa';
+                previewBox.style.display = 'block';
+                // 세로형 캔버스 생성
+                const canvas = document.createElement('canvas');
+                canvas.width = 120;
+                canvas.height = 180;
+                canvas.style.borderRadius = '6px';
+                canvas.style.background = '#e9ecef';
+                canvas.style.boxShadow = '0 2px 8px rgba(0,0,0,0.07)';
+                canvas.style.objectFit = 'contain';
+                canvas.style.display = 'block';
+                // 캔버스에 이미지 렌더링
+                const ctx = canvas.getContext('2d');
+                ctx.fillStyle = '#e9ecef';
+                ctx.fillRect(0,0,canvas.width,canvas.height);
+                // 전신사진 렌더링 (비율 유지, 중앙)
+                let photo = localStorage.getItem('user-photo');
+                let photoPromise = Promise.resolve();
+                if (photo) {
+                    photoPromise = new Promise(resolve => {
+                        const img = new window.Image();
+                        img.onload = function() {
+                            ctx.globalAlpha = 1.0;
+                            let pw = img.naturalWidth;
+                            let ph = img.naturalHeight;
+                            let cw = canvas.width;
+                            let ch = canvas.height;
+                            let scale = Math.min(cw/pw, ch/ph);
+                            let dw = pw * scale;
+                            let dh = ph * scale;
+                            let dx = (cw - dw) / 2;
+                            let dy = (ch - dh) / 2;
+                            ctx.drawImage(img, dx, dy, dw, dh);
+                            resolve();
+                        };
+                        img.src = photo;
+                    });
+                }
+                // 옷들 렌더링
+                let promises = [photoPromise];
+                lb.items.forEach(item => {
+                    promises.push(new Promise(resolve => {
+                        const img = new window.Image();
+                        img.onload = function() {
+                            let left = parseInt(item.left||'100')/400*canvas.width;
+                            let top = parseInt(item.top||'100')/600*canvas.height;
+                            let width = parseInt(item.width||'200')/400*canvas.width;
+                            let height = img.naturalHeight/img.naturalWidth * width;
+                            ctx.drawImage(img, left, top, width, height);
+                            resolve();
+                        };
+                        img.src = item.image;
+                    }));
+                });
+                Promise.all(promises).then(()=>{
+                    // nothing needed
+                });
+                previewBox.appendChild(canvas);
+                // 불러오기 버튼 추가
+                const loadBtn = document.createElement('button');
+                loadBtn.textContent = '불러오기';
+                loadBtn.style.marginTop = '10px';
+                loadBtn.style.display = 'block';
+                loadBtn.style.width = '100%';
+                loadBtn.style.background = 'transparent';
+                loadBtn.style.border = '1px solid #bbb';
+                loadBtn.style.color = '#333';
+                loadBtn.style.fontFamily = 'inherit';
+                loadBtn.style.fontSize = '14px';
+                loadBtn.style.padding = '6px 0';
+                loadBtn.style.borderRadius = '6px';
+                loadBtn.style.cursor = 'pointer';
+                loadBtn.onmouseover = function() { loadBtn.style.borderColor = '#0078d7'; };
+                loadBtn.onmouseout = function() { loadBtn.style.borderColor = '#bbb'; };
+                loadBtn.onclick = function() {
+                    loadLookbook(idx);
+                    modal.style.display = 'none';
+                };
+                previewBox.appendChild(loadBtn);
+                // 삭제 버튼 추가
+                const deleteBtn = document.createElement('button');
+                deleteBtn.textContent = '삭제';
+                deleteBtn.style.marginTop = '8px';
+                deleteBtn.style.display = 'block';
+                deleteBtn.style.width = '100%';
+                deleteBtn.style.background = 'transparent';
+                deleteBtn.style.border = '1px solid #f55';
+                deleteBtn.style.color = '#f55';
+                deleteBtn.style.fontFamily = 'inherit';
+                deleteBtn.style.fontSize = '14px';
+                deleteBtn.style.padding = '6px 0';
+                deleteBtn.style.borderRadius = '6px';
+                deleteBtn.style.cursor = 'pointer';
+                deleteBtn.onmouseover = function() { deleteBtn.style.borderColor = '#d00'; deleteBtn.style.color = '#d00'; };
+                deleteBtn.onmouseout = function() { deleteBtn.style.borderColor = '#f55'; deleteBtn.style.color = '#f55'; };
+                deleteBtn.onclick = function() {
+                    if (confirm('정말 삭제하시겠습니까?')) {
+                        let lookbooks = getLookbooks();
+                        lookbooks.splice(idx, 1);
+                        setLookbooks(lookbooks);
+                        // 목록 새로고침
+                        document.getElementById('show-lookbooks').click();
+                    }
+                };
+                previewBox.appendChild(deleteBtn);
+                listDiv.appendChild(previewBox);
+            });
+        }
+        modal.style.display = 'flex';
+        // 이벤트 위임 제거 (텍스트/버튼 없음)
+        listDiv.onclick = null;
+    };
+
+    document.getElementById('close-lookbook-modal').onclick = function() {
+        document.getElementById('lookbook-modal').style.display = 'none';
+    };
+
+    function loadLookbook(idx) {
+        const fittingRoom = document.getElementById('fitting-room');
+        fittingRoom.querySelectorAll('.clothes').forEach(el => {
+            el.dispatchEvent(new Event('remove'));
+            el.remove();
+        });
+        let lookbooks = getLookbooks();
+        if (lookbooks[idx]) {
+            lookbooks[idx].items.forEach(item => {
+                addClothesToFittingRoom(item, item);
+            });
+        }
+    }
+
+    document.getElementById('clear-lookbook').onclick = function() {
+        const fittingRoom = document.getElementById('fitting-room');
+        fittingRoom.querySelectorAll('.clothes').forEach(el => {
+            // 커스텀 remove 이벤트로 테두리도 삭제
+            el.dispatchEvent(new Event('remove'));
+            el.remove();
+        });
+        hideTooltip();
+    };
+    </script>
+</body>
+</html>

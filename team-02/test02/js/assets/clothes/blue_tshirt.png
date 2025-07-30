@@ -1,0 +1,19 @@
+<svg width="200" height="220" viewBox="0 0 200 220" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .tshirt { fill: #4a90e2; stroke: #357abd; stroke-width: 2; }
+      .neck { fill: #357abd; }
+    </style>
+  </defs>
+  
+  <!-- 티셔츠 본체 -->
+  <path class="tshirt" d="M60 60 L140 60 L150 80 L150 210 L50 210 L50 80 Z"/>
+  
+  <!-- 소매 -->
+  <ellipse class="tshirt" cx="45" cy="85" rx="12" ry="20"/>
+  <ellipse class="tshirt" cx="155" cy="85" rx="12" ry="20"/>
+  
+  <!-- 목 부분 -->
+  <ellipse class="neck" cx="100" cy="65" rx="20" ry="12"/>
+  <ellipse fill="#4a90e2" cx="100" cy="75" rx="18" ry="10"/>
+</svg>

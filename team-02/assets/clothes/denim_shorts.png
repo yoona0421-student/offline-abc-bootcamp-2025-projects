@@ -1,0 +1,31 @@
+<svg width="160" height="140" viewBox="0 0 160 140" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .shorts { fill: #5577aa; stroke: #3e5a7a; stroke-width: 2; }
+      .pocket { fill: #3e5a7a; stroke: #2d4459; stroke-width: 1; }
+      .seam { stroke: #87ceeb; stroke-width: 1; fill: none; }
+    </style>
+  </defs>
+  
+  <!-- 반바지 본체 -->
+  <path class="shorts" d="M30 20 L130 20 L135 120 L110 130 L80 130 L80 120 L75 120 L75 130 L50 130 L25 120 Z"/>
+  
+  <!-- 앞주머니 -->
+  <path class="pocket" d="M40 35 L55 32 L58 55 L40 58 Z"/>
+  <path class="pocket" d="M120 35 L105 32 L102 55 L120 58 Z"/>
+  
+  <!-- 뒷주머니 -->
+  <rect class="pocket" x="105" y="65" width="15" height="18" rx="2"/>
+  
+  <!-- 스티치 -->
+  <line class="seam" x1="35" y1="25" x2="35" y2="115"/>
+  <line class="seam" x1="125" y1="25" x2="125" y2="115"/>
+  <line class="seam" x1="80" y1="90" x2="80" y2="125"/>
+  
+  <!-- 벨트 루프 -->
+  <rect class="pocket" x="50" y="15" width="2" height="10"/>
+  <rect class="pocket" x="65" y="15" width="2" height="10"/>
+  <rect class="pocket" x="80" y="15" width="2" height="10"/>
+  <rect class="pocket" x="95" y="15" width="2" height="10"/>
+  <rect class="pocket" x="110" y="15" width="2" height="10"/>
+</svg>

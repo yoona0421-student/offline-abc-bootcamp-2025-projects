@@ -1,0 +1,29 @@
+<svg width="200" height="350" viewBox="0 0 200 350" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .dress { fill: #ff7b7b; stroke: #ff5252; stroke-width: 2; }
+      .pattern { fill: #ffffff; opacity: 0.3; }
+    </style>
+  </defs>
+  
+  <!-- 원피스 본체 -->
+  <path class="dress" d="M70 60 L130 60 L135 100 L140 340 L60 340 L65 100 Z"/>
+  
+  <!-- 소매 -->
+  <ellipse class="dress" cx="65" cy="80" rx="10" ry="15"/>
+  <ellipse class="dress" cx="135" cy="80" rx="10" ry="15"/>
+  
+  <!-- 목선 -->
+  <ellipse fill="#ff5252" cx="100" cy="65" rx="15" ry="8"/>
+  
+  <!-- 꽃 패턴 -->
+  <circle class="pattern" cx="85" cy="120" r="4"/>
+  <circle class="pattern" cx="115" cy="140" r="4"/>
+  <circle class="pattern" cx="90" cy="180" r="4"/>
+  <circle class="pattern" cx="110" cy="200" r="4"/>
+  <circle class="pattern" cx="95" cy="240" r="4"/>
+  <circle class="pattern" cx="105" cy="280" r="4"/>
+  
+  <!-- 허리 라인 -->
+  <path stroke="#ff5252" stroke-width="1" fill="none" d="M75 150 Q100 145 125 150"/>
+</svg>

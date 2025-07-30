@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>가상 피팅룸 - Virtual Fitting Room</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Fabric.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js"></script>
+    
+    <!-- Google Fonts - 모던 폰트 -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'inter': ['Inter', 'sans-serif'],
+                        'poppins': ['Poppins', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="min-h-screen bg-white font-inter text-gray-900">
+    <div class="container mx-auto px-6 py-12 max-w-7xl">
+        <!-- 헤더 -->
+        <header class="text-center mb-12">
+            <h1 class="text-4xl font-bold font-poppins text-gray-900 mb-4">
+                Virtual Fitting Room
+            </h1>
+            <p class="text-lg text-gray-600 font-inter max-w-2xl mx-auto">
+                AI 기반 가상 피팅 시스템으로 온라인에서도 완벽한 스타일링을 경험해보세요
+            </p>
+        </header>
+
+        <!-- 페이지 소개 섹션 -->
+        <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-8 mb-12 border border-gray-100">
+            <div class="text-center">
+                <div class="inline-flex items-center justify-center w-16 h-16 bg-blue-100 rounded-full mb-6">
+                    <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                    </svg>
+                </div>
+                <h2 class="text-2xl font-semibold font-poppins text-gray-900 mb-4">
+                    간단한 3단계로 완성하는 가상 피팅
+                </h2>
+                <div class="grid md:grid-cols-3 gap-6 mt-8">
+                    <div class="text-center">
+                        <div class="w-12 h-12 bg-blue-500 text-white rounded-full flex items-center justify-center mx-auto mb-3 font-semibold">1</div>
+                        <h3 class="font-medium text-gray-900 mb-2">사진 업로드</h3>
+                        <p class="text-sm text-gray-600">전신 사진을 업로드하여<br>피팅 배경으로 설정하세요</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="w-12 h-12 bg-blue-500 text-white rounded-full flex items-center justify-center mx-auto mb-3 font-semibold">2</div>
+                        <h3 class="font-medium text-gray-900 mb-2">옷 선택하기</h3>
+                        <p class="text-sm text-gray-600">다양한 스타일의 옷 중에서<br>마음에 드는 아이템을 선택하세요</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="w-12 h-12 bg-blue-500 text-white rounded-full flex items-center justify-center mx-auto mb-3 font-semibold">3</div>
+                        <h3 class="font-medium text-gray-900 mb-2">스타일링</h3>
+                        <p class="text-sm text-gray-600">드래그로 위치를 조정하고<br>크기를 맞춰 완벽한 핏을 만들어보세요</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 xl:grid-cols-4 gap-8">
+            <!-- 좌측: 사진 업로드 & 옷장 -->
+            <div class="xl:col-span-1 space-y-6">
+                <!-- 사진 업로드 섹션 -->
+                <div class="bg-white rounded-xl shadow-lg border border-gray-200 p-6">
+                    <h2 class="text-xl font-semibold font-poppins text-gray-900 mb-4 flex items-center">
+                        <svg class="w-5 h-5 mr-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                        </svg>
+                        사진 업로드
+                    </h2>
+                    
+                    <div class="space-y-4">
+                        <input 
+                            type="file" 
+                            id="photoUpload" 
+                            accept="image/*" 
+                            class="hidden"
+                        >
+                        <label 
+                            for="photoUpload" 
+                            class="block w-full p-6 border-2 border-dashed border-gray-300 rounded-xl text-center cursor-pointer hover:border-blue-400 hover:bg-blue-50 transition-all group"
+                        >
+                            <div class="text-gray-400 group-hover:text-blue-500 transition-colors">
+                                <svg class="w-12 h-12 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+                                </svg>
+                                <div class="text-sm font-medium text-gray-700 group-hover:text-blue-600">
+                                    클릭하여 사진을 업로드하세요
+                                </div>
+                                <div class="text-xs text-gray-500 mt-1">
+                                    JPG, PNG 파일 지원 (최대 10MB)
+                                </div>
+                            </div>
+                        </label>
+                        
+                        <button 
+                            id="removeBackground" 
+                            class="w-full bg-red-500 hover:bg-red-600 text-white py-3 px-4 rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-300"
+                            disabled
+                        >
+                            배경 이미지 제거
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 옷장 섹션 -->
+                <div class="bg-white rounded-xl shadow-lg border border-gray-200 p-6">
+                    <h2 class="text-xl font-semibold font-poppins text-gray-900 mb-4 flex items-center">
+                        <svg class="w-5 h-5 mr-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                        </svg>
+                        옷장
+                    </h2>
+                    
+                    <!-- 옷 선택 방법 탭 -->
+                    <div class="mb-4">
+                        <div class="flex rounded-lg bg-gray-100 p-1">
+                            <button 
+                                id="catalogTab" 
+                                class="flex-1 py-2 px-3 text-sm font-medium rounded-md transition-all bg-white text-blue-600 shadow-sm"
+                            >
+                                제공 카탈로그
+                            </button>
+                            <button 
+                                id="uploadTab" 
+                                class="flex-1 py-2 px-3 text-sm font-medium rounded-md transition-all text-gray-600 hover:text-gray-900"
+                            >
+                                내 옷 업로드
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- 카탈로그 뷰 -->
+                    <div id="catalogView" class="tab-content">
+                        <div id="clothesList" class="grid grid-cols-2 gap-3 max-h-96 overflow-y-auto custom-scrollbar">
+                            <!-- 옷 목록이 여기에 동적으로 추가됩니다 -->
+                            <div class="text-center text-gray-500 col-span-2 py-8">
+                                <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto mb-3"></div>
+                                <div class="text-sm">옷장을 불러오는 중...</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 사용자 업로드 뷰 -->
+                    <div id="uploadView" class="tab-content hidden">
+                        <div class="space-y-4">
+                            <input 
+                                type="file" 
+                                id="clothUpload" 
+                                accept="image/*" 
+                                class="hidden"
+                            >
+                            <label 
+                                for="clothUpload" 
+                                class="block w-full p-4 border-2 border-dashed border-gray-300 rounded-lg text-center cursor-pointer hover:border-blue-400 hover:bg-blue-50 transition-all group"
+                            >
+                                <div class="text-gray-400 group-hover:text-blue-500 transition-colors">
+                                    <svg class="w-10 h-10 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+                                    </svg>
+                                    <div class="text-sm font-medium text-gray-700 group-hover:text-blue-600">
+                                        옷 이미지 업로드
+                                    </div>
+                                    <div class="text-xs text-gray-500 mt-1">
+                                        PNG 파일 권장 (투명 배경)
+                                    </div>
+                                </div>
+                            </label>
+                            
+                            <div class="text-xs text-gray-500 bg-yellow-50 p-3 rounded-lg border border-yellow-200">
+                                💡 <strong>팁:</strong> 배경이 있는 이미지는 자동으로 배경 제거를 시도합니다. 
+                                가장 좋은 결과를 위해서는 투명 배경(PNG) 이미지를 사용하세요.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 중앙: 캔버스 -->
+            <div class="xl:col-span-3">
+                <div class="bg-white rounded-xl shadow-lg border border-gray-200 p-6">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-xl font-semibold font-poppins text-gray-900 flex items-center">
+                            <svg class="w-5 h-5 mr-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
+                            </svg>
+                            피팅룸
+                        </h2>
+                        
+                        <div class="flex gap-3">
+                            <button 
+                                id="bringToFront" 
+                                class="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                disabled
+                                title="선택된 옷을 맨 앞으로"
+                            >
+                                앞으로
+                            </button>
+                            <button 
+                                id="sendToBack" 
+                                class="bg-orange-500 hover:bg-orange-600 text-white py-2 px-4 rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                disabled
+                                title="선택된 옷을 맨 뒤로"
+                            >
+                                뒤로
+                            </button>
+                            <button 
+                                id="clearCanvas" 
+                                class="bg-gray-500 hover:bg-gray-600 text-white py-2 px-4 rounded-lg font-medium transition-colors"
+                            >
+                                초기화
+                            </button>
+                            <button 
+                                id="downloadImage" 
+                                class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg font-medium transition-colors"
+                            >
+                                이미지 저장
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="flex justify-center">
+                        <div class="border-2 border-gray-200 rounded-xl overflow-hidden shadow-inner bg-gray-50">
+                            <canvas 
+                                id="fittingCanvas" 
+                                width="600" 
+                                height="700"
+                                class="bg-white"
+                            ></canvas>
+                        </div>
+                    </div>
+                    
+                    <!-- 캔버스 컨트롤 가이드 -->
+                    <div class="mt-6 bg-blue-50 rounded-lg p-4">
+                        <h3 class="text-sm font-medium text-blue-900 mb-2">사용 가이드</h3>
+                        <ul class="text-xs text-blue-700 space-y-1">
+                            <li>• <strong>카탈로그:</strong> 제공되는 옷에서 원하는 아이템을 클릭하여 추가</li>
+                            <li>• <strong>내 옷:</strong> 본인의 옷 사진을 업로드하여 사용 (PNG 권장)</li>
+                            <li>• <strong>조작:</strong> 드래그로 위치 조정, 모서리로 크기 조절</li>
+                            <li>• <strong>레이어:</strong> "앞으로/뒤로" 버튼으로 겹침 순서 조정</li>
+                            <li>• <strong>삭제:</strong> Delete 키 또는 Ctrl/Cmd + Z로 선택된 옷 제거</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 하단 설명 -->
+        <footer class="mt-12 text-center">
+            <div class="bg-gray-50 rounded-xl p-6 border border-gray-200">
+                <p class="text-sm text-gray-600 font-inter">
+                    🎨 온라인에서 간편하게 다양한 스타일을 체험하고 나만의 완벽한 룩을 찾아보세요!
+                </p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,229 @@
+/* 모던 화이트 테마 스타일 */
+
+/* 커스텀 스크롤바 */
+.custom-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: #e5e7eb #f9fafb;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: #f9fafb;
+    border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #d1d5db;
+    border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #9ca3af;
+}
+
+/* 옷 아이템 스타일 */
+.cloth-item {
+    background-color: white;
+    border-radius: 0.5rem;
+    padding: 0.75rem;
+    border: 1px solid #e5e7eb;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    transform: scale(1);
+}
+
+.cloth-item:hover {
+    border-color: #93c5fd;
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* 캔버스 컨테이너 */
+#fittingCanvas {
+    border-radius: 8px;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.06);
+}
+
+/* 파일 업로드 영역 호버 효과 */
+label[for="photoUpload"]:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* 버튼 호버 효과 */
+button {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.2s ease;
+}
+
+button:hover {
+    transform: translateY(-1px);
+}
+
+button:active {
+    transform: translateY(0);
+}
+
+/* 그라데이션 효과 */
+.gradient-border {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 2px;
+    border-radius: 12px;
+}
+
+.gradient-border > div {
+    background: white;
+    border-radius: 10px;
+}
+
+/* 로딩 애니메이션 */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-fadeInUp {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+/* 카드 그림자 효과 */
+.card-shadow {
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+}
+
+.card-shadow-lg {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* 반응형 디자인 개선 */
+@media (max-width: 768px) {
+    .container {
+        padding: 1rem;
+    }
+    
+    #fittingCanvas {
+        width: 100%;
+        height: auto;
+        max-width: 400px;
+        max-height: 550px;
+    }
+    
+    .cloth-item {
+        padding: 0.5rem;
+    }
+    
+    /* 모바일에서 그리드 조정 */
+    .xl\:col-span-3 {
+        grid-column: span 1;
+    }
+    
+    .xl\:col-span-1 {
+        grid-column: span 1;
+    }
+}
+
+/* 접근성 개선 */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* 포커스 스타일 */
+button:focus,
+input:focus,
+label:focus {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+}
+
+/* 인터랙티브 요소들 */
+.interactive-element {
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.interactive-element:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* 글래스모피즘 효과 */
+.glass-effect {
+    backdrop-filter: blur(16px) saturate(180%);
+    background-color: rgba(255, 255, 255, 0.75);
+    border: 1px solid rgba(209, 213, 219, 0.3);
+}
+
+/* 텍스트 그라데이션 */
+.text-gradient {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* 스크롤 페이드 효과 */
+.scroll-fade {
+    mask-image: linear-gradient(to bottom, black 90%, transparent 100%);
+}
+
+/* 커스텀 체크박스나 라디오 버튼 스타일 */
+.custom-checkbox {
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #d1d5db;
+    border-radius: 4px;
+    background: white;
+    position: relative;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.custom-checkbox:checked {
+    background: #3b82f6;
+    border-color: #3b82f6;
+}
+
+.custom-checkbox:checked::after {
+    content: '✓';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+/* 드래그 앤 드롭 영역 스타일 */
+.drop-zone {
+    border: 2px dashed #d1d5db;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.drop-zone.dragover {
+    border-color: #3b82f6;
+    background-color: #eff6ff;
+}
+
+/* 토스트 알림 스타일 개선 */
+.toast-notification {
+    backdrop-filter: blur(8px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* 다크모드 지원 제거 (화이트 테마로 고정) */
