@@ -1,0 +1,30 @@
+<svg width="220" height="260" viewBox="0 0 220 260" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .jacket { fill: #2c2c2c; stroke: #1a1a1a; stroke-width: 2; }
+      .zipper { stroke: #c0c0c0; stroke-width: 2; fill: none; }
+      .pocket { fill: #1a1a1a; stroke: #0d0d0d; stroke-width: 1; }
+    </style>
+  </defs>
+  
+  <!-- 재킷 본체 -->
+  <path class="jacket" d="M50 70 L170 70 L180 90 L180 250 L40 250 L40 90 Z"/>
+  
+  <!-- 소매 -->
+  <ellipse class="jacket" cx="35" cy="100" rx="18" ry="30"/>
+  <ellipse class="jacket" cx="185" cy="100" rx="18" ry="30"/>
+  
+  <!-- 칼라 -->
+  <path class="jacket" d="M60 70 L110 50 L160 70 L150 85 L110 75 L70 85 Z"/>
+  
+  <!-- 지퍼 -->
+  <line class="zipper" x1="110" y1="70" x2="110" y2="240"/>
+  
+  <!-- 주머니 -->
+  <rect class="pocket" x="60" y="140" width="25" height="20" rx="2"/>
+  <rect class="pocket" x="135" y="140" width="25" height="20" rx="2"/>
+  
+  <!-- 소매 커프스 -->
+  <rect class="pocket" x="27" y="125" width="16" height="8"/>
+  <rect class="pocket" x="177" y="125" width="16" height="8"/>
+</svg>

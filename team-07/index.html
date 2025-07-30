@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>사진 포즈 추천 웹앱</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <!-- Google Fonts: Cute, rounded font & Pixel font & Pixel Jelly font -->
+  <link href="https://fonts.googleapis.com/css2?family=Jua&family=Do+Hyeon&family=Gowun+Dodum&family=Press+Start+2P&family=Silkscreen:wght@700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%);
+      /* 픽셀아트 배경 패턴 PNG를 추가 (예: pixel-bg-pattern.png) */
+      background-image: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%), url('pixel-bg-pattern.png');
+      background-repeat: repeat;
+      background-size: auto, 120px;
+    }
+    .main-title {
+      color: #fff;
+      font-family: 'Silkscreen', 'Press Start 2P', 'Jua', 'Do Hyeon', 'Gowun Dodum', cursive, sans-serif;
+      font-size: 7rem;
+      font-weight: 700;
+      letter-spacing: 4px;
+      text-shadow: 0 6px 0 #7c3aed, 0 12px 24px #00000044;
+      margin-bottom: 3.5rem;
+      text-align: center;
+      line-height: 1.05;
+      filter: drop-shadow(0 2px 0 #fff8fc) drop-shadow(0 0 8px #a18cd1cc);
+    }
+    .pixel-label {
+      font-family: 'Press Start 2P', 'Jua', 'Do Hyeon', 'Gowun Dodum', cursive, sans-serif;
+      font-size: 1.05rem;
+      color: #ffe066;
+      text-shadow: 1px 1px 0 #7c3aed, 2px 2px 0 #fff8fc;
+      margin-bottom: 0.2rem;
+      letter-spacing: 0.5px;
+    }
+    .pixel-select {
+      font-family: 'Press Start 2P', 'Jua', 'Do Hyeon', 'Gowun Dodum', cursive, sans-serif;
+      border: 3px solid #a18cd1;
+      border-radius: 0;
+      background: #fff8fc;
+      color: #7c3aed;
+      padding: 0.5rem 1.2rem;
+      font-size: 1rem;
+      box-shadow: 2px 2px 0 #fff, 4px 4px 0 #a18cd1;
+      margin-bottom: 0.5rem;
+    }
+    .pixel-btn {
+      font-family: 'Press Start 2P', 'Jua', 'Do Hyeon', 'Gowun Dodum', cursive, sans-serif;
+      background: #a18cd1;
+      color: #fff;
+      border: 3px solid #fff;
+      border-radius: 0;
+      box-shadow: 2px 2px 0 #fff, 4px 4px 0 #7c3aed;
+      padding: 0.7rem 1.5rem;
+      font-size: 1.1rem;
+      letter-spacing: 1px;
+      transition: background 0.2s, box-shadow 0.2s;
+      margin-top: 1rem;
+    }
+    .pixel-btn:hover {
+      background: #7c3aed;
+      color: #fff8fc;
+      box-shadow: 2px 2px 0 #fff, 6px 6px 0 #a18cd1;
+    }
+    .main-flex {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: flex-start;
+      gap: 2.5rem;
+      width: 100%;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .pixel-banner {
+      width: 520px;
+      min-width: 320px;
+      max-width: 640px;
+      image-rendering: pixelated;
+      border-radius: 16px;
+      box-shadow: 0 4px 24px 0 #a18cd1aa;
+      margin-top: 0.5rem;
+      margin-bottom: 0.5rem;
+      display: block;
+    }
+    .form-panel {
+      flex: 1;
+      background: #fff8fc;
+      border-radius: 18px;
+      box-shadow: 0 2px 16px 0 #a18cd144;
+      padding: 2.5rem 2rem 2rem 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.8rem;
+      min-width: 260px;
+      max-width: 400px;
+      align-items: center;
+      justify-content: center;
+    }
+    .form-panel > div {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .pixel-select {
+      width: 100%;
+      max-width: 260px;
+      text-align: center;
+    }
+    @media (max-width: 800px) {
+      .main-flex { flex-direction: column; align-items: center; gap: 1.5rem; }
+      .pixel-banner { margin-bottom: 1.5rem; width: 90vw; max-width: 98vw; min-width: 0; }
+      .form-panel { max-width: 98vw; }
+    }
+  </style>
+</head>
+<body class="bg-white min-h-screen flex flex-col items-center justify-start p-4">
+  <div class="main-title">사진 포즈 추천</div>
+  <div style="text-align:center; margin-top:-2.5rem; margin-bottom:2.5rem;">
+    <span style="font-size:3.2rem; font-weight:900; display:inline-block; color:#fff; text-shadow:0 3px 0 #7c3aed, 0 6px 16px #a18cd1cc, 1px 1px 0 #fff8fc; filter:drop-shadow(0 1px 0 #fff8fc); letter-spacing:1px;">╰(*°▽°*)╯</span>
+  </div>
+  <div class="main-flex">
+    <div style="display:flex; flex-direction:column; align-items:center;">
+      <img src="pixel-bg.gif" alt="Pixel Art Banner" class="pixel-banner" />
+      <div id="result" class="mt-6 text-center" style="min-height:2.5rem; width:100%; max-width:640px; font-family:'Press Start 2P','Jua','Do Hyeon','Gowun Dodum',cursive,sans-serif; font-size:1.1rem; color:#7c3aed; text-shadow:1px 1px 0 #fff8fc,2px 2px 0 #a18cd1;"></div>
+    </div>
+    <main class="form-panel">
+      <div>
+        <label class="pixel-label">인원 수</label>
+        <select id="numPeople" class="pixel-select">
+          <option value="">선택하세요</option>
+          <option value="1">1명</option>
+          <option value="2">2명</option>
+          <option value="3">3명</option>
+          <option value="4">4명</option>
+          <option value="5">5명</option>
+          <option value="6">6명</option>
+          <option value="7">7명</option>
+          <option value="8">8명</option>
+          <option value="9">9명</option>
+          <option value="10">10명</option>
+        </select>
+      </div>
+      <div>
+        <label class="pixel-label">관계</label>
+        <select id="relation" class="pixel-select">
+          <option value="">선택하세요</option>
+          <option value="커플">커플</option>
+          <option value="친구">친구</option>
+          <option value="가족">가족</option>
+          <option value="지인">지인</option>
+        </select>
+      </div>
+      <div>
+        <label class="pixel-label">테마</label>
+        <select id="theme" class="pixel-select">
+          <option value="">선택하세요</option>
+          <option value="사랑">사랑</option>
+          <option value="우정">우정</option>
+          <option value="혐오">혐오</option>
+          <option value="훈훈">훈훈</option>
+          <option value="재미">재미</option>
+          <option value="슬픔">슬픔</option>
+        </select>
+      </div>
+      <button id="generateBtn" class="pixel-btn flex items-center justify-center gap-2">
+        포즈 생성 <span>✨</span>
+      </button>
+    </main>
+  </div>
+  <footer class="mt-8 text-gray-400 text-sm">© 2025 사진 포즈 추천 웹앱</footer>
+  <script src="script.js"></script>
+</body>
+</html>

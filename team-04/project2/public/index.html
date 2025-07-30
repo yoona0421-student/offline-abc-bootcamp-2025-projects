@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>감정 기반 노래 추천</title>
+  <style>
+    @font-face {
+      font-family: 'GmarketSansLight';
+      src: url('./fonts/GmarketSansLight.ttf') format('truetype');
+      font-weight: 300;
+      font-style: normal;
+    }
+    @font-face {
+      font-family: 'GmarketSansMedium';
+      src: url('./fonts/GmarketSansMedium.ttf') format('truetype');
+      font-weight: 500;
+      font-style: normal;
+    }
+    @font-face {
+      font-family: 'GmarketSansBold';
+      src: url('./fonts/GmarketSansBold.ttf') format('truetype');
+      font-weight: 700;
+      font-style: normal;
+    }
+
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      min-height: 100vh;
+      width: 100vw;
+      font-family: 'GmarketSansMedium', sans-serif;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      /* 인사이드 아웃 스틸컷 배경 + 어두운 오버레이 */
+      background:
+        linear-gradient(rgba(30,30,30,0.7), rgba(30,30,30,0.7)),
+        url('./images/backgrouund.jpg') center/cover no-repeat;
+      background-attachment: fixed;
+      overflow-x: hidden;
+    }
+
+    /* 스마트폰 프레임 */
+    .phone-frame {
+      background: rgba(20, 20, 20, 0.92);
+      border-radius: 36px;
+      box-shadow: 0 0 0 8px #222, 0 8px 40px 0 #ff6e7f55;
+      width: 370px;
+      max-width: 96vw;
+      height: 90vh;
+      max-height: 700px;
+      min-height: 540px;
+      margin: 40px 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 32px 18px 32px 18px;
+      position: relative;
+      overflow: auto;
+    }
+    /* 상단 스피커/카메라 */
+    .phone-notch {
+      width: 60px;
+      height: 10px;
+      background: #333;
+      border-radius: 8px;
+      margin: 0 auto 18px auto;
+      opacity: 0.7;
+    }
+
+    h1, h2, h3, p, label, .emotion-label {
+      text-align: center !important;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    h1 {
+      font-family: 'GmarketSansBold';
+      font-size: 2.1rem;
+      margin-bottom: 8px;
+      letter-spacing: -1px;
+      color: #fff;
+      text-shadow: 0 2px 12px #232526, 0 0px 2px #ffe066, 0 0px 10px #232526;
+      /* 그라데이션 제거, 그림자 강조 */
+    }
+    h3 {
+      font-family: 'GmarketSansLight';
+      font-size: 1.1rem;
+      margin-bottom: 28px;
+      color: #adb5bd;
+    }
+
+    /* 인사이드 아웃 구슬 스타일 감정 카드 */
+    .emotion-container {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+    .emotion-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: none;
+      border: none;
+      box-shadow: none;
+      cursor: pointer;
+      margin-bottom: 2px;
+      transition: transform 0.18s, box-shadow 0.18s;
+      width: 70px;
+    }
+    .emotion-img {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.18), 0 0 0 4px rgba(255,255,255,0.08);
+      border: 3px solid #fff;
+      transition: transform 0.18s, box-shadow 0.18s, border 0.18s;
+    }
+    .emotion-card:hover .emotion-img,
+    .emotion-card.selected .emotion-img {
+      transform: translateY(-6px) scale(1.10);
+      z-index: 2;
+    }
+    /* 감정별 네온 컬러 매핑 */
+    .emotion-card[data-emotion="기쁨이"]:hover .emotion-img,
+    .emotion-card[data-emotion="기쁨이"].selected .emotion-img {
+      box-shadow: 0 8px 32px #ffe06699, 0 2px 8px #ffe06677, 0 0 0 6px #ffe06655;
+      border: 3px solid #ffe066;
+    }
+    .emotion-card[data-emotion="슬픔이"]:hover .emotion-img,
+    .emotion-card[data-emotion="슬픔이"].selected .emotion-img {
+      box-shadow: 0 8px 32px #74c0fc99, 0 2px 8px #748ffc77, 0 0 0 6px #74c0fc55;
+      border: 3px solid #74c0fc;
+    }
+    .emotion-card[data-emotion="버럭이"]:hover .emotion-img,
+    .emotion-card[data-emotion="버럭이"].selected .emotion-img {
+      box-shadow: 0 8px 32px #ff6b6b99, 0 2px 8px #fa525299, 0 0 0 6px #ff6b6b55;
+      border: 3px solid #ff6b6b;
+    }
+    .emotion-card[data-emotion="까칠이"]:hover .emotion-img,
+    .emotion-card[data-emotion="까칠이"].selected .emotion-img {
+      box-shadow: 0 8px 32px #63e6be99, 0 2px 8px #38d9a999, 0 0 0 6px #63e6be55;
+      border: 3px solid #63e6be;
+    }
+    .emotion-card[data-emotion="소심이"]:hover .emotion-img,
+    .emotion-card[data-emotion="소심이"].selected .emotion-img {
+      box-shadow: 0 8px 32px #b197fc99, 0 2px 8px #845ef799, 0 0 0 6px #b197fc55;
+      border: 3px solid #b197fc;
+    }
+    .emotion-card[data-emotion="불안이"]:hover .emotion-img,
+    .emotion-card[data-emotion="불안이"].selected .emotion-img {
+      box-shadow: 0 8px 32px #ffa94d99, 0 2px 8px #ff922b99, 0 0 0 6px #ffa94d55;
+      border: 3px solid #ffa94d;
+    }
+    .emotion-card[data-emotion="부럽이"]:hover .emotion-img,
+    .emotion-card[data-emotion="부럽이"].selected .emotion-img {
+      box-shadow: 0 8px 32px #63e6e2cc, 0 2px 8px #38d9ec99, 0 0 0 6px #63e6e255;
+      border: 3px solid #63e6e2;
+    }
+    .emotion-card[data-emotion="따분이"]:hover .emotion-img,
+    .emotion-card[data-emotion="따분이"].selected .emotion-img {
+      box-shadow: 0 8px 32px #4263eb99, 0 2px 8px #364fc799, 0 0 0 6px #4263eb55;
+      border: 3px solid #4263eb;
+    }
+    .emotion-card[data-emotion="당황이"]:hover .emotion-img,
+    .emotion-card[data-emotion="당황이"].selected .emotion-img {
+      box-shadow: 0 8px 32px #f783ac99, 0 2px 8px #e6498099, 0 0 0 6px #f783ac55;
+      border: 3px solid #f783ac;
+    }
+    .emotion-label {
+      margin-top: 8px;
+      color: #fff;
+      font-weight: bold;
+      font-size: 1em;
+      letter-spacing: 0.5px;
+      text-align: center;
+      background: none;
+      pointer-events: none;
+    }
+    .emotion-keyword {
+      font-size: 0.92em;
+      color: #ffe066;
+      margin-bottom: 12px;
+      margin-top: -2px;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-shadow: 0 1px 6px #23252699;
+    }
+
+    .chatbot-input {
+      display: none;
+      margin: 18px 0 0 0;
+      text-align: center;
+      background: #f8f9fa;
+      border-radius: 18px;
+      box-shadow: 0 2px 8px #adb5bd33;
+      padding: 18px 0 10px 0;
+    }
+    .chatbot-input input {
+      width: 90%;
+      padding: 12px;
+      border-radius: 8px;
+      border: none;
+      font-size: 1rem;
+      margin-bottom: 10px;
+      background: #333;
+      color: #fff;
+      text-align: center;
+    }
+    .chatbot-input p,
+    .chatbot-input .light {
+      color: #232526; /* 검정색 계열로 변경 */
+    }
+
+    #recommendations {
+      margin-top: 24px;
+      text-align: center;
+    }
+    .recommend-title {
+      font-size: 1.15em;
+      font-weight: bold;
+      margin: 18px 0 10px 0;
+      color: #fff; /* 파란색(#3b5bdb) → 흰색(#fff)으로 변경 */
+      letter-spacing: 0.03em;
+      text-shadow: 0 1px 6px #23252699;
+    }
+    .track-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .track-card {
+      background: url('./images/chat.png') center/cover no-repeat;
+      color: #232526;
+      padding: 14px 10px 10px 10px;
+      border-radius: 18px;
+      box-shadow: 0 2px 8px #ffe06655;
+      font-size: 1.01rem;
+      font-weight: 500;
+      width: 230px;
+      max-width: 90vw;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: box-shadow 0.2s;
+      text-align: center;
+      position: relative;
+      border: 2px solid #fff; /* 테두리선을 흰색으로 변경 */
+    }
+    .track-card .track-keyword {
+      position: absolute;
+      top: -18px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #fff;
+      color: #232526;
+      font-size: 0.85em;
+      font-weight: bold;
+      border-radius: 10px;
+      padding: 2px 10px;
+      box-shadow: 0 2px 8px #ffe06655;
+      letter-spacing: 0.1em;
+    }
+    .track-card a {
+      color: #ff3b3b; /* music play 빨간색 */
+      font-weight: bold;
+      text-decoration: none;
+      margin-left: 8px;
+      font-size: 0.98em;
+    }
+    .track-card a:hover {
+      text-decoration: underline;
+    }
+
+    button {
+      margin-top: 10px;
+      padding: 12px 22px;
+      border: none;
+      background: #fff;           /* 흰색 배경 */
+      color: #ff3b3b;             /* 글씨 빨간색 */
+      border-radius: 16px;
+      cursor: pointer;
+      font-size: 1.08rem;
+      font-family: 'GmarketSansMedium';
+      font-weight: bold;
+      box-shadow: 0 2px 8px #ffe06655;
+      transition: background 0.2s, color 0.2s;
+      display: inline-block;
+      text-align: center;
+      border: 2px solid #ff3b3b; /* 테두리도 빨간색 */
+    }
+    button:hover {
+      background: #ff3b3b;        /* 배경 빨간색 */
+      color: #fff;                /* 글씨 흰색 */
+    }
+
+    @media (max-width: 600px) {
+      .phone-frame {
+        width: 98vw;
+        min-height: 90vh;
+        padding: 10vw 2vw;
+      }
+      .emotion-container {
+        gap: 8px;
+      }
+      .emotion-card {
+        width: 60px;
+        height: 80px;
+        font-size: 1.3rem;
+      }
+    }
+    @media (max-width: 420px) {
+      .phone-frame {
+        width: 100vw;
+        min-width: unset;
+        padding: 8vw 2vw;
+        border-radius: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="phone-frame">
+    <div class="phone-notch"></div>
+    <h2>기분 말하지 말고 노래로 말해🎤</h2>
+    <h4>인사이드아웃 캐릭터들과 하룰라라🪽 가는🏃 music🎧 playlist</h4>
+    <div class="emotion-container" id="emotionCards">
+      <div class="emotion-card" data-emotion="기쁨이" onclick="selectEmotion('기쁨이', this)">
+        <div class="emotion-img" style="background-image:url('./images/joy.png')"></div>
+        <div class="emotion-label">기쁨이</div>
+      </div>
+      <div class="emotion-card" data-emotion="슬픔이" onclick="selectEmotion('슬픔이', this)">
+        <div class="emotion-img" style="background-image:url('./images/sadness.png')"></div>
+        <div class="emotion-label">슬픔이</div>
+      </div>
+      <div class="emotion-card" data-emotion="버럭이" onclick="selectEmotion('버럭이', this)">
+        <div class="emotion-img" style="background-image:url('./images/anger.png')"></div>
+        <div class="emotion-label">버럭이</div>
+      </div>
+      <div class="emotion-card" data-emotion="까칠이" onclick="selectEmotion('까칠이', this)">
+        <div class="emotion-img" style="background-image:url('./images/disgust.png')"></div>
+        <div class="emotion-label">까칠이</div>
+      </div>
+      <div class="emotion-card" data-emotion="소심이" onclick="selectEmotion('소심이', this)">
+        <div class="emotion-img" style="background-image:url('./images/fear.png')"></div>
+        <div class="emotion-label">소심이</div>
+      </div>
+      <div class="emotion-card" data-emotion="불안이" onclick="selectEmotion('불안이', this)">
+        <div class="emotion-img" style="background-image:url('./images/anxiety.png')"></div>
+        <div class="emotion-label">불안이</div>
+      </div>
+      <div class="emotion-card" data-emotion="부럽이" onclick="selectEmotion('부럽이', this)">
+        <div class="emotion-img" style="background-image:url('./images/envy.png')"></div>
+        <div class="emotion-label">부럽이</div>
+      </div>
+      <div class="emotion-card" data-emotion="따분이" onclick="selectEmotion('따분이', this)">
+        <div class="emotion-img" style="background-image:url('./images/boredom.png')"></div>
+        <div class="emotion-label">따분이</div>
+      </div>
+      <div class="emotion-card" data-emotion="당황이" onclick="selectEmotion('당황이', this)">
+        <div class="emotion-img" style="background-image:url('./images/embarrassment.png')"></div>
+        <div class="emotion-label">당황이</div>
+      </div>
+    </div>
+
+    <button onclick="openChatbot()">내 감정이 없어요😢</button>
+
+    <div class="chatbot-input" id="chatbotSection">
+      <p class="light">당신의 기분을 한 문장으로 표현해 주세요😊</p>
+      <input type="text" id="userEmotionInput" placeholder="ex: 아무것도 하기 싫어요" />
+      <button onclick="sendToGPT()">보내기</button>
+    </div>
+
+    <div id="recommendations"></div>
+  </div>
+  <script>
+    const emotionColors = {
+      "행복": "#ffe066",
+      "슬픔": "#748ffc",
+      "피곤": "#adb5bd",
+      "화남": "#f03e3e",
+      "설렘": "#d0bfff"
+    };
+
+    // 감정별 키워드(설명) 매핑
+    const emotionKeywords = {
+      "기쁨이": "기쁨",
+      "슬픔이": "슬픔",
+      "버럭이": "화남",
+      "까칠이": "까칠",
+      "소심이": "소심",
+      "불안이": "불안",
+      "부럽이": "부럽",
+      "따분이": "따분",
+      "당황이": "당황"
+    };
+
+    function openChatbot() {
+      document.getElementById("chatbotSection").style.display = "block";
+    }
+
+    async function sendToGPT() {
+      const userInput = document.getElementById("userEmotionInput").value;
+      const response = await fetch("/api/emotion", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ input: userInput })
+      });
+
+      const data = await response.json();
+      if (data.emotion) {
+        selectEmotion(data.emotion);
+      } else {
+        document.getElementById("recommendations").innerHTML = `<p>감정 분석에 실패했습니다. 다시 시도해 주세요.</p>`;
+      }
+    }
+
+    let selectedCard = null;
+    async function selectEmotion(emotion, cardEl) {
+      // 카드 선택 효과
+      if (selectedCard) selectedCard.classList.remove('selected');
+      if (cardEl) {
+        cardEl.classList.add('selected');
+        selectedCard = cardEl;
+      }
+
+      document.getElementById("recommendations").innerHTML = `<p style="color:#ffe066"><strong>추천 중...</strong></p>`;
+
+      try {
+        const response = await fetch("/api/recommend", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ emotion })
+        });
+
+        const songs = await response.json();
+        const resultDiv = document.getElementById("recommendations");
+
+        if (!Array.isArray(songs) || songs.length === 0) {
+          resultDiv.innerHTML = `<p>추천된 곡이 없습니다. 감정을 다시 선택해 주세요.</p>`;
+          return;
+        }
+
+        // 추천 결과 레이아웃 개선
+        resultDiv.innerHTML = `
+          <div class="recommend-title">
+            🎙️<span class="track-keyword">${emotionKeywords[emotion] || emotion}</span> 기분에 어울리는 추천 곡🎙️
+          </div>
+          <div class="track-list"></div>
+        `;
+
+        const trackList = resultDiv.querySelector('.track-list');
+        songs.forEach(({ title, artist }) => {
+          const query = encodeURIComponent(`${title} ${artist}`);
+          const url = `https://music.youtube.com/search?q=${query}`;
+          trackList.innerHTML += `
+            <div class="track-card">
+              <div><strong>${title}</strong></div>
+              <div style="font-size:0.97em; color:#555; margin:4px 0 6px 0;">${artist}</div>
+              <a href="${url}" target="_blank">🎧 music play</a>
+            </div>
+          `;
+        });
+      } catch (err) {
+        console.error("추천 실패", err);
+        document.getElementById("recommendations").innerHTML = `<p>추천 요청 중 오류가 발생했습니다.</p>`;
+      }
+    }
+
+    // 감정 카드 배경색 자동 적용
+    document.addEventListener("DOMContentLoaded", () => {
+      const cards = document.querySelectorAll(".emotion-card");
+      cards.forEach(card => {
+        const label = card.querySelector(".emotion-label")?.textContent;
+        if (label && emotionColors[label]) {
+          card.style.backgroundColor = emotionColors[label];
+        }
+      });
+    });
+  </script>
+</body>
+</html>

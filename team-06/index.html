@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⚡️ 잇팟 EAT-POT</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <section id="list-view" class="view active">
+            <header class="app-header">
+                <div class="logo">⚡️ 잇팟 EAT-POT</div>
+                <h1>지금 동료들이<br>새로운 만남을 기다려요</h1>
+                <form id="filter-form" class="filter-form">
+                    <div class="filter-input-group">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="text" id="place-filter" placeholder="동네 이름으로 찾기 (예: 강남, 둔산동)">
+                    </div>
+                    <button type="submit">찾기</button>
+                    <button type="button" id="clear-filter-btn">초기화</button>
+                </form>
+            </header>
+            <main id="mukpat-list" class="grid-container">
+                <div class="card-item skeleton"></div><div class="card-item skeleton"></div><div class="card-item skeleton"></div>
+            </main>
+            <button id="show-create-view-btn" class="fab" title="새 먹팟 만들기"><i class="fa-solid fa-plus"></i></button>
+        </section>
+
+        <section id="form-view" class="view">
+            <header class="view-header">
+                <button class="back-btn"><i class="fa-solid fa-arrow-left"></i></button>
+                <h2 id="form-title"></h2>
+            </header>
+            <main class="glass-card">
+                <form id="mukpat-form">
+                    <div class="form-group"><label for="title">먹팟 이름</label><input type="text" id="title" placeholder="예) 점심에 텐동 드실 분!"></div>
+                    <div class="form-group"><label for="description">상세 설명</label><textarea id="description" placeholder="모임에 대한 자세한 내용을 알려주세요." rows="4"></textarea></div>
+                    <div class="form-group"><label>결제 방식</label><div class="radio-group"><label><input type="radio" name="paymentMethod" value="DUTCH_PAY" checked><span><i class="fa-solid fa-divide"></i> N빵</span></label><label><input type="radio" name="paymentMethod" value="CREATOR_PAYS"><span><i class="fa-solid fa-crown"></i> 방장이 쏜다!</span></label></div></div>
+                    <div class="form-group"><label for="estimatedCost">1인당 예상 비용 (원)</label><input type="number" id="estimatedCost" placeholder="예) 15000" step="1000"></div>
+                    <div class="form-group"><label for="mood">모임 분위기</label><input type="text" id="mood" placeholder="예) 수다 환영, 스터디 위주, 조용히 식사"></div>
+                    <div class="form-group"><label>만나는 날짜 및 시간</label><div class="input-group"><input type="date" id="date"><input type="time" id="time"></div></div>
+                    <div class="form-group"><label for="place">만나는 장소</label><input type="text" id="place" placeholder="정확한 장소 이름을 입력해주세요"></div>
+                    <div class="form-group"><label>모집 인원</label><div class="stepper"><button type="button" class="stepper-btn" data-step="-1">-</button><input type="number" id="maxAttendees" value="2" min="2" readonly><button type="button" class="stepper-btn" data-step="1">+</button></div></div>
+                    <div class="form-group"><label>나이 제한</label><div class="input-group"><input type="number" id="ageMin" placeholder="최소" value="20"><input type="number" id="ageMax" placeholder="최대" value="99"></div></div>
+                    <div class="form-group"><label for="kakaoLink">카카오톡 오픈채팅 링크</label><input type="text" id="kakaoLink" placeholder="https://open.kakao.com/..."></div>
+                    <div class="form-group"><label for="tags">관심사 태그</label><input type="text" id="tags" placeholder="쉼표로 구분 (예: #점심, #스터디)"></div>
+                    <button type="submit" class="submit-btn">완료</button>
+                </form>
+            </main>
+        </section>
+
+        <section id="detail-view" class="view"></section>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

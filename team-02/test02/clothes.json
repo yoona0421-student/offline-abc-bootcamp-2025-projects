@@ -1,0 +1,92 @@
+{
+  "clothes": [
+    {
+      "id": "shirt_001",
+      "name": "화이트 셔츠",
+      "description": "깔끔한 화이트 셔츠로 어떤 스타일에도 잘 어울립니다",
+      "category": "상의",
+      "image": "assets/clothes/white_shirt.png",
+      "defaultSize": {
+        "width": 150,
+        "height": 200
+      }
+    },
+    {
+      "id": "tshirt_001",
+      "name": "블루 티셔츠",
+      "description": "편안한 블루 컬러 티셔츠",
+      "category": "상의", 
+      "image": "assets/clothes/blue_tshirt.png",
+      "defaultSize": {
+        "width": 140,
+        "height": 180
+      }
+    },
+    {
+      "id": "jeans_001",
+      "name": "클래식 진",
+      "description": "어디에나 어울리는 클래식한 데님 팬츠",
+      "category": "하의",
+      "image": "assets/clothes/classic_jeans.png",
+      "defaultSize": {
+        "width": 120,
+        "height": 250
+      }
+    },
+    {
+      "id": "skirt_001",
+      "name": "플리츠 스커트",
+      "description": "우아한 플리츠 스커트",
+      "category": "하의",
+      "image": "assets/clothes/pleats_skirt.png",
+      "defaultSize": {
+        "width": 130,
+        "height": 150
+      }
+    },
+    {
+      "id": "dress_001",
+      "name": "여름 원피스",
+      "description": "시원한 여름 원피스",
+      "category": "원피스",
+      "image": "assets/clothes/summer_dress.png",
+      "defaultSize": {
+        "width": 160,
+        "height": 300
+      }
+    },
+    {
+      "id": "jacket_001",
+      "name": "레더 재킷",
+      "description": "멋스러운 레더 재킷",
+      "category": "아우터",
+      "image": "assets/clothes/leather_jacket.png",
+      "defaultSize": {
+        "width": 170,
+        "height": 220
+      }
+    },
+    {
+      "id": "sweater_001",
+      "name": "니트 스웨터",
+      "description": "따뜻한 니트 스웨터",
+      "category": "상의",
+      "image": "assets/clothes/knit_sweater.png",
+      "defaultSize": {
+        "width": 155,
+        "height": 190
+      }
+    },
+    {
+      "id": "shorts_001",
+      "name": "데님 반바지",
+      "description": "편안한 데님 반바지",
+      "category": "하의",
+      "image": "assets/clothes/denim_shorts.png",
+      "defaultSize": {
+        "width": 110,
+        "height": 120
+      }
+    }
+  ]
+}
