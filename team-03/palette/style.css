@@ -1,0 +1,59 @@
+:root {
+    --bg-color: #1e1e1e;
+    --panel-bg-color: #2d2d2d;
+    --border-color: #444;
+    --text-color: #f0f0f0;
+    --primary-color: #3a86ff;
+    --hover-color: #4a90ff;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif; background-color: var(--bg-color); color: var(--text-color); overflow: hidden; user-select: none; }
+
+#canvas-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow: hidden; }
+#main-canvas, #temp-canvas { position: absolute; image-rendering: pixelated; image-rendering: -moz-crisp-edges; image-rendering: crisp-edges; transform-origin: 0 0; }
+#main-canvas { border: 1px solid var(--border-color); background-color: #fff; }
+#temp-canvas { pointer-events: none; z-index: 1; }
+
+#coords-display { position: fixed; bottom: 10px; right: 10px; background-color: rgba(0,0,0,0.5); padding: 5px 10px; border-radius: 3px; font-size: 12px; z-index: 1001; }
+.panel { position: absolute; background-color: var(--panel-bg-color); border: 1px solid var(--border-color); border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); min-width: 200px; z-index: 1000; resize: none; overflow: hidden; cursor: default; }
+.panel-header { padding: 8px 12px; cursor: move; background-color: #3c3c3c; border-bottom: 1px solid var(--border-color); font-weight: bold; border-top-left-radius: 8px; border-top-right-radius: 8px; }
+.panel-content { padding: 12px; }
+.panel-header + .panel-content { padding-top: 12px; }
+
+button, select, input[type="color"], input[type="number"] { background-color: #3c3c3c; color: var(--text-color); border: 1px solid #555; border-radius: 4px; padding: 6px 10px; margin-bottom: 5px; cursor: pointer; font-size: 14px; width: 100%; transition: background-color 0.2s; }
+button:hover { background-color: #4f4f4f; }
+button:active { background-color: #5a5a5a; }
+button.active { background-color: var(--primary-color); color: white; border-color: var(--hover-color); }
+button:disabled { background-color: #333; color: #666; cursor: not-allowed; }
+input[type="checkbox"] { margin-right: 5px; vertical-align: middle; }
+input[type="color"] { padding: 0; height: 30px; }
+hr { border: none; border-top: 1px solid var(--border-color); margin: 10px 0; }
+.tool-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
+
+#color-palette, #recent-colors { display: grid; grid-template-columns: repeat(auto-fill, minmax(22px, 1fr)); gap: 4px; margin-top: 5px; }
+.color-swatch { width: 22px; height: 22px; border: 2px solid transparent; border-radius: 4px; cursor: pointer; transition: transform 0.1s, border-color 0.2s; }
+.color-swatch:hover { transform: scale(1.1); }
+.color-swatch.active { border-color: var(--primary-color); transform: scale(1.1); }
+
+#layer-list { list-style: none; background-color: #1e1e1e; border-radius: 3px; padding: 5px; max-height: 150px; overflow-y: auto; margin-bottom: 10px; }
+#layer-list li { padding: 8px; background-color: #3c3c3c; margin-bottom: 4px; border-radius: 3px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-size: 14px; }
+#layer-list li.active { background-color: var(--primary-color); font-weight: bold; }
+
+#frame-list { display: flex; gap: 5px; padding: 5px; overflow-x: auto; background-color: #1e1e1e; border-radius: 3px; margin-bottom: 10px; }
+.frame-item { flex-shrink: 0; padding: 4px; border: 2px solid transparent; border-radius: 4px; cursor: pointer; }
+.frame-item.active { border-color: var(--primary-color); }
+.frame-thumbnail { width: 48px; height: 48px; border: 1px solid var(--border-color); background-color: #fff; image-rendering: pixelated; display: block; }
+.layer-controls, .frame-controls { display: flex; gap: 5px; }
+
+/* ★★★★★ 수정된 부분 ★★★★★ */
+#preview-panel {
+    min-width: unset; /* 기존의 최소 너비 제한을 제거 */
+    width: fit-content; /* 내용물 크기에 맞게 너비를 자동으로 조절 */
+}
+#preview-canvas { background-color: #fff; image-rendering: pixelated; border: 1px solid var(--border-color); display: block; }
+
+.modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); justify-content: center; align-items: center; }
+.modal-content { background-color: var(--panel-bg-color); padding: 30px; border: 1px solid var(--border-color); border-radius: 8px; width: 90%; max-width: 500px; }
+.close-button { color: #aaa; float: right; font-size: 28px; font-weight: bold; cursor: pointer; }
+.modal ul { list-style: none; margin-top: 20px; padding-left: 10px; }
+.modal li { margin-bottom: 10px; }

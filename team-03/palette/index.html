@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>바이브코딩 픽셀 아트 에디터</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+<body>
+    <!-- 임시 드로잉용 최상위 캔버스 (도형 미리보기 등) -->
+    <canvas id="temp-canvas"></canvas>
+    
+    <!-- 주 캔버스 영역 -->
+    <div id="canvas-container">
+        <canvas id="main-canvas"></canvas>
+    </div>
+
+    <div id="coords-display">X: 0, Y: 0</div>
+    
+    <!-- 플로팅 툴 패널들 -->
+    <div class="panel draggable" id="settings-panel" style="top: 20px; left: 20px;">
+        <div class="panel-header">설정</div>
+        <div class="panel-content">
+            <label for="canvas-size">캔버스 크기:</label>
+            <select id="canvas-size">
+                <option value="16">16x16</option>
+                <option value="32" selected>32x32</option>
+                <option value="64">64x64</option>
+            </select>
+            <label><input type="checkbox" id="grid-toggle" checked> 격자 표시/숨김</label>
+            <button id="shortcuts-button">단축키 안내</button>
+        </div>
+    </div>
+
+    <div class="panel draggable" id="tools-panel" style="top: 180px; left: 20px;">
+        <div class="panel-header">그리기 도구</div>
+        <div class="panel-content tool-grid">
+            <button class="tool active" data-tool="pen"><i class="fa-solid fa-pencil"></i> 펜</button>
+            <button class="tool" data-tool="eraser"><i class="fa-solid fa-eraser"></i> 지우개</button>
+            <button class="tool" data-tool="eyedropper"><i class="fa-solid fa-eye-dropper"></i> 스포이드</button>
+            <button class="tool" data-tool="bucket"><i class="fa-solid fa-fill-drip"></i> 페인트통</button>
+            <button class="tool" data-tool="line"><i class="fa-solid fa-minus"></i> 선</button>
+            <button class="tool" data-tool="rectangle"><i class="fa-regular fa-square"></i> 사각형</button>
+            <button class="tool" data-tool="circle"><i class="fa-regular fa-circle"></i> 원</button>
+        </div>
+        <div class="panel-content">
+             <label for="symmetry-mode">대칭 모드:</label>
+            <select id="symmetry-mode">
+                <option value="none">없음</option>
+                <option value="vertical">세로</option>
+                <option value="horizontal">가로</option>
+            </select>
+        </div>
+        <div class="panel-content">
+            <label for="brush-size">브러시 크기:</label>
+            <input type="number" id="brush-size" value="1" min="1" max="10">
+        </div>
+    </div>
+
+    <div class="panel draggable" id="colors-panel" style="top: 20px; right: 20px;">
+        <div class="panel-header">색상</div>
+        <div class="panel-content">
+            <input type="color" id="color-picker" value="#000000">
+            <div id="color-palette"></div>
+            <hr>
+            <label>최근 사용 색상:</label>
+            <div id="recent-colors"></div>
+        </div>
+    </div>
+
+    <div class="panel draggable" id="layers-panel" style="bottom: 180px; right: 20px;">
+        <div class="panel-header">레이어</div>
+        <div class="panel-content">
+            <ul id="layer-list"></ul>
+            <div class="layer-controls">
+                <button id="add-layer-btn" title="레이어 추가"><i class="fa-solid fa-plus"></i></button>
+                <button id="remove-layer-btn" title="레이어 삭제"><i class="fa-solid fa-trash"></i></button>
+                <button id="duplicate-layer-btn" title="레이어 복제"><i class="fa-solid fa-clone"></i></button>
+                <button id="move-layer-up-btn" title="위로 이동"><i class="fa-solid fa-arrow-up"></i></button>
+                <button id="move-layer-down-btn" title="아래로 이동"><i class="fa-solid fa-arrow-down"></i></button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="panel draggable" id="preview-panel" style="bottom: 20px; right: 220px;">
+        <div class="panel-header">미리보기</div>
+        <div class="panel-content">
+            <canvas id="preview-canvas"></canvas>
+        </div>
+    </div>
+
+    <div class="panel draggable" id="animation-panel" style="bottom: 20px; left: 20px;">
+        <div class="panel-header">애니메이션</div>
+        <div class="panel-content">
+            <div id="frame-list"></div>
+            <div class="frame-controls">
+                 <button id="add-frame-btn">프레임 추가</button>
+                 <button id="copy-frame-btn">프레임 복사</button>
+                 <button id="remove-frame-btn">프레임 삭제</button>
+            </div>
+            <label for="fps-slider">FPS: <span id="fps-value">10</span></label>
+            <input type="range" id="fps-slider" min="1" max="30" value="10">
+            <button id="play-animation-btn">재생</button>
+        </div>
+    </div>
+
+    <div class="panel draggable" id="file-panel" style="top: 520px; left: 20px;">
+        <div class="panel-header">파일</div>
+        <div class="panel-content">
+            <button id="undo-btn" disabled><i class="fa-solid fa-rotate-left"></i> 실행 취소</button>
+            <button id="redo-btn" disabled><i class="fa-solid fa-rotate-right"></i> 다시 실행</button>
+            <hr>
+            <button id="save-project-btn">프로젝트 저장 (JSON)</button>
+            <button id="load-project-btn">프로젝트 불러오기</button>
+            <input type="file" id="load-project-input" style="display:none;" accept=".json">
+            <hr>
+            <button id="export-png-btn">PNG로 내보내기</button>
+            <button id="export-gif-btn">GIF로 내보내기</button>
+        </div>
+    </div>
+
+    <div id="shortcuts-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">×</span>
+            <h2>단축키 안내</h2>
+            <ul>
+                <li><strong>Ctrl/Cmd + Z</strong>: 실행 취소</li>
+                <li><strong>Ctrl/Cmd + Y</strong>: 다시 실행</li>
+                <li><strong>마우스 휠</strong>: 줌 인/아웃</li>
+                <li><strong>Space + 드래그</strong>: 캔버스 이동</li>
+                <li><strong>P</strong>: 펜 도구</li>
+                <li><strong>E</strong>: 지우개 도구</li>
+                <li><strong>I</strong>: 스포이드 도구</li>
+                <li><strong>B</strong>: 페인트통 도구</li>
+                <li><strong>L</strong>: 선 도구</li>
+            </ul>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gif.js/0.2.0/gif.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
