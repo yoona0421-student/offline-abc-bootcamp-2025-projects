@@ -5,40 +5,121 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title><%= party.title %> - 부캠런치</title>
   <link rel="stylesheet" href="/css/style.css">
+  <script src="https://unpkg.com/feather-icons"></script>
 </head>
 <body>
   <%- include('_navbars.ejs') %>
 
-  <div class="form-container">
-    <h1>파티 상세 정보</h1>
-
-    <div class="party-detail-info">
-      <h2><%= party.title %></h2>
-      <p><strong>카테고리:</strong> <%= party.category || '지정 안함' %></p>
-      <p><strong>장소:</strong> <%= party.location || '지정 안함' %></p>
-      <p><strong>시간:</strong> <%= party.meet_time %></p>
-      <p><strong>주최자:</strong> <%= party.host_name %></p>
-      <p><strong>모집 현황:</strong> <%= party.current_members %> / <%= party.max_members %> 명</p>
+  <div class="party-detail-container">
+    <a href="/" class="btn btn-outline btn-back-to-main">← 메인으로 돌아가기</a>
+    <div class="party-detail-header">
+      <h1><%= party.title %></h1>
+      <p>주최자: <%= party.host_name %></p>
     </div>
 
-    <br>
-    
-    <% if (party.current_members < party.max_members) { %>
-      <% if (!locals.myParties || !myParties.some(p => p.id === party.id)) { %>
-        <form action="/party/<%= party.id %>/join" method="POST">
-          <button type="submit" class="btn-primary" style="width:100%;">참여하기</button>
+    <div class="party-detail-info-grid">
+      <div class="info-item">
+        <i data-feather="tag" class="icon"></i>
+        <strong>카테고리:</strong> <%= party.category || '지정 안함' %>
+      </div>
+      <div class="info-item">
+        <i data-feather="map-pin" class="icon"></i>
+        <strong>장소:</strong> <%= party.location || '미정' %>
+      </div>
+      <div class="info-item">
+        <i data-feather="clock" class="icon"></i>
+        <strong>시간:</strong> <%= party.meet_time %>
+      </div>
+      <div class="info-item">
+        <i data-feather="users" class="icon"></i>
+        <strong>모집 현황:</strong> <%= party.current_members %> / <%= party.max_members %> 명
+      </div>
+    </div>
+
+    <div class="party-detail-actions">
+      <% if (locals.user && user.name === party.host_name) { %>
+        <a href="/party/<%= party.id %>/edit" class="btn btn-secondary">파티 수정하기</a>
+        <form action="/party/<%= party.id %>/delete" method="POST" onsubmit="return confirm('정말로 이 파티를 삭제하시겠습니까?');">
+          <button type="submit" class="btn btn-danger">파티 삭제하기</button>
+        </form>
+      <% } %>
+
+      <% if (party.current_members < party.max_members) { %>
+        <% if (!locals.myParties || !myParties.some(p => p.id === party.id)) { %>
+          <form action="/party/<%= party.id %>/join" method="POST">
+            <button type="submit" class="btn btn-primary">참여하기</button>
+          </form>
+        <% } else { %>
+          <button class="btn btn-secondary" disabled>이미 참여한 파티입니다</button>
+        <% } %>
+      <% } else { %>
+        <button class="btn btn-secondary" disabled>
+          마감되었습니다
+        </button>
+      <% } %>
+    </div>
+
+    <div class="party-members-section">
+      <h3>참여 멤버 (<%= members.length %>/<%= party.max_members %>)</h3>
+      <% if (members.length > 0) { %>
+        <ul class="member-list">
+          <% members.forEach(member => { %>
+            <li><i data-feather="user" class="member-icon"></i> <%= member %></li>
+          <% }); %>
+        </ul>
+      <% } else { %>
+        <p class="no-members-message">아직 참여한 멤버가 없습니다.</p>
+      <% } %>
+    </div>
+
+    <div class="party-reactions-section">
+      <h3>이 파티에 대한 감정표현</h3>
+      <div class="reaction-buttons">
+        <% if (locals.user) { %>
+          <% const reactions = [ { type: 'like', emoji: '👍' }, { type: 'heart', emoji: '❤️' }, { type: 'haha', emoji: '😂' }, { type: 'sad', emoji: '😢' }, { type: 'angry', emoji: '😡' } ]; %>
+          <% reactions.forEach(reaction => { %>
+            <form action="/party/<%= party.id %>/react" method="POST" style="display:inline;">
+              <input type="hidden" name="reaction_type" value="<%= reaction.type %>">
+              <button type="submit" class="btn btn-reaction">
+                <%= reaction.emoji %> <span class="reaction-count"><%= reactionCounts[reaction.type] || 0 %></span>
+              </button>
+            </form>
+          <% }); %>
+        <% } else { %>
+          <p>로그인하여 감정표현을 남겨보세요!</p>
+        <% } %>
+      </div>
+    </div>
+
+    <div class="party-comments-section">
+      <h3>댓글 (<%= comments.length %>)</h3>
+      <% if (locals.user) { %>
+        <form action="/party/<%= party.id %>/comment" method="POST" class="comment-form">
+          <textarea name="comment_text" placeholder="댓글을 입력하세요..." required></textarea>
+          <button type="submit" class="btn btn-primary">댓글 달기</button>
         </form>
       <% } else { %>
-        <button class="btn-secondary" style="width:100%;" disabled>이미 참여한 파티입니다</button>
+        <p>로그인하여 댓글을 남겨보세요!</p>
       <% } %>
-    <% } else { %>
-      <button class="btn-primary" style="width:100%; background-color: #6c757d; cursor: not-allowed;" disabled>
-        마감되었습니다
-      </button>
-    <% } %>
 
-    <a href="/" class="link-to-main">메인으로 돌아가기</a>
+      <% if (comments.length > 0) { %>
+        <ul class="comment-list">
+          <% comments.forEach(comment => { %>
+            <li>
+              <strong><%= comment.user_name %></strong> <small><%= new Date(comment.created_at).toLocaleString() %></small>
+              <p><%= comment.comment_text %></p>
+            </li>
+          <% }); %>
+        </ul>
+      <% } else { %>
+        <p class="no-comments-message">아직 댓글이 없습니다.</p>
+      <% } %>
+    </div>
+
   </div>
 
+  <script>
+    feather.replace();
+  </script>
 </body>
 </html>

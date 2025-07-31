@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>새 파티 만들기 - 부캠런치</title>
+  <title>파티 수정 - 부캠런치</title>
   <link rel="stylesheet" href="/css/style.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 </head>
@@ -11,26 +11,23 @@
   <%- include('_navbars.ejs') %>
 
   <div class="form-container">
-    <h1>어떤 점심 파티를 만드시겠어요?</h1>
-
-    <form action="/party" method="POST">
-
+    <h1>파티 수정하기</h1>
+    <form action="/party/<%= party.id %>/edit" method="POST">
       <div class="form-section">
         <h2 class="form-section-title">파티 정보</h2>
         <div class="form-group">
           <label for="title">파티 제목</label>
-          <input type="text" id="title" name="title" placeholder="예: 같이 마라탕 먹어요!" required>
+          <input type="text" id="title" name="title" value="<%= party.title %>" required>
         </div>
         <div class="form-group">
           <label for="category">카테고리</label>
           <select id="category" name="category">
-            <option value="기타">선택하세요</option>
-            <option value="한식">한식</option>
-            <option value="중식">중식</option>
-            <option value="일식">일식</option>
-            <option value="양식">양식</option>
-            <option value="분식">분식</option>
-            <option value="카페">카페</option>
+            <option value="한식" <%= party.category === '한식' ? 'selected' : '' %>>한식</option>
+            <option value="중식" <%= party.category === '중식' ? 'selected' : '' %>>중식</option>
+            <option value="일식" <%= party.category === '일식' ? 'selected' : '' %>>일식</option>
+            <option value="양식" <%= party.category === '양식' ? 'selected' : '' %>>양식</option>
+            <option value="분식" <%= party.category === '분식' ? 'selected' : '' %>>분식</option>
+            <option value="기타" <%= party.category === '기타' ? 'selected' : '' %>>기타</option>
           </select>
         </div>
       </div>
@@ -38,37 +35,32 @@
       <div class="form-section">
         <h2 class="form-section-title">약속 시간 및 장소</h2>
         <div class="form-group">
-          <label for="meet_time">언제 만날까요?</label>
-          <input type="text" id="meet_time_picker" name="meet_time" placeholder="날짜와 시간을 선택하세요" required>
+          <label for="meet_time">시간</label>
+          <input type="text" id="meet_time_picker" name="meet_time" value="<%= party.meet_time %>" required>
         </div>
         <div class="form-group">
-          <label for="location">어디서 만날까요?</label>
-          <input type="text" id="location" name="location" placeholder="예: 강남역 11번 출구 앞">
+          <label for="location">장소</label>
+          <input type="text" id="location" name="location" value="<%= party.location %>" required>
         </div>
       </div>
 
       <div class="form-section">
         <h2 class="form-section-title">참여 인원</h2>
-        <div class="form-row">
-            <div class="form-group">
-              <label for="max_members">몇 명 모을까요? (본인 포함)</label>
-              <div class="stepper">
-                <button type="button" id="stepper-down">-</button>
-                <input type="number" id="max_members" name="max_members" min="2" value="4" readonly>
-                <button type="button" id="stepper-up">+</button>
-              </div>
-            </div>
-            <div class="form-group">
-                <label for="host_name">누가 만드나요?</label>
-                <input type="text" id="host_name" name="host_name" placeholder="닉네임을 입력해주세요." required>
-            </div>
+        <div class="form-group">
+          <label for="max_members">최대 인원</label>
+          <div class="stepper">
+            <button type="button" id="stepper-down">-</button>
+            <input type="number" id="max_members" name="max_members" value="<%= party.max_members %>" min="2" readonly>
+            <button type="button" id="stepper-up">+</button>
+          </div>
         </div>
       </div>
-      
-      <button type="submit" class="btn btn-primary">파티 만들기</button>
-    </form>
 
-    <a href="/" class="link-to-main">메인으로 돌아가기</a>
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary">수정 완료</button>
+        <a href="/party/<%= party.id %>" class="btn btn-outline">취소</a>
+      </div>
+    </form>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>

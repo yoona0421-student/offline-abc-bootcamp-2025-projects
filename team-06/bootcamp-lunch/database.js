@@ -50,6 +50,37 @@ db.serialize(() => {
       console.error('party_members 테이블 생성 실패:', err.message);
     }
   });
+
+  // comments 테이블 생성
+  db.run(`CREATE TABLE IF NOT EXISTS comments (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    party_id INTEGER NOT NULL,
+    user_name TEXT NOT NULL,
+    comment_text TEXT NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (party_id) REFERENCES parties (id),
+    FOREIGN KEY (user_name) REFERENCES users (name)
+  )`, (err) => {
+    if (err) {
+      console.error('comments 테이블 생성 실패:', err.message);
+    }
+  });
+
+  // reactions 테이블 생성
+  db.run(`CREATE TABLE IF NOT EXISTS reactions (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    party_id INTEGER NOT NULL,
+    user_name TEXT NOT NULL,
+    reaction_type TEXT NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (party_id) REFERENCES parties (id),
+    FOREIGN KEY (user_name) REFERENCES users (name),
+    UNIQUE(party_id, user_name, reaction_type)
+  )`, (err) => {
+    if (err) {
+      console.error('reactions 테이블 생성 실패:', err.message);
+    }
+  });
 });
 
 module.exports = db;

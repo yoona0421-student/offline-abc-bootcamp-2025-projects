@@ -1,161 +1,17 @@
-<style>
-  .navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem 2rem;
-    background-color: #fff;
-    border-bottom: 1px solid #e9ecef;
-  }
-  .btn-secondary {
-    padding: 6px 12px;
-    background-color: #6c757d;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 0.9rem;
-    transition: background-color 0.2s;
-  }
-  
-  .btn-secondary:hover {
-    background-color: #5a6268;
-  }
-
-  .my-parties-popup {
-    position: fixed;
-    top: 60px;
-    right: 20px;
-    width: 280px;
-    background: rgba(255, 255, 255, 0.95);
-    border: 1px solid rgba(233, 236, 239, 0.8);
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    padding: 0.8rem;
-    display: none;
-    z-index: 1000;
-    backdrop-filter: blur(4px);
-    font-size: 0.9rem;
-  }
-
-  .my-parties-popup h3 {
-    margin: 0 0 0.8rem 0;
-    font-size: 1rem;
-    color: #495057;
-    padding-bottom: 0.5rem;
-    border-bottom: 1px solid rgba(233, 236, 239, 0.8);
-  }
-
-  .my-parties-popup.show {
-    display: block;
-    animation: fadeIn 0.2s ease-out;
-  }
-
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-      transform: translateY(-10px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  .my-parties-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    max-height: 300px;
-    overflow-y: auto;
-  }
-
-  .my-parties-list li {
-    padding: 0.6rem;
-    border-bottom: 1px solid rgba(233, 236, 239, 0.5);
-    transition: background-color 0.2s;
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 1rem;
-  }
-
-  .my-parties-list li:hover {
-    background-color: rgba(248, 249, 250, 0.8);
-  }
-
-  .my-parties-list li:last-child {
-    border-bottom: none;
-  }
-
-  .party-info {
-    flex: 1;
-  }
-
-  .my-parties-list strong {
-    color: #495057;
-    display: block;
-    margin-bottom: 0.2rem;
-  }
-
-  .my-parties-list small {
-    color: #6c757d;
-    font-size: 0.85rem;
-    line-height: 1.4;
-  }
-
-  .leave-party-form {
-    margin-top: 0.2rem;
-  }
-
-  .btn-leave {
-    padding: 4px 8px;
-    font-size: 0.75rem;
-    background-color: transparent;
-    color: #dc3545;
-    border: 1px solid #dc3545;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-
-  .btn-leave:hover {
-    background-color: #dc3545;
-    color: white;
-  }
-  .navbar-brand {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: #4a69bd;
-    text-decoration: none;
-  }
-  .navbar-nav {
-    display: flex;
-    align-items: center;
-    gap: 1.5rem;
-  }
-  .navbar-nav a {
-    text-decoration: none;
-    color: #495057;
-    font-weight: 500;
-  }
-  .navbar-nav .welcome-msg {
-    color: #333;
-  }
-</style>
-
 <nav class="navbar">
   <a href="/" class="navbar-brand">🚀 부캠런치</a>
   <div class="navbar-nav">
     <% if (user) { %>
       <!-- 로그인 상태일 때 -->
       <span class="welcome-msg"><strong><%= user.name %></strong>님, 환영합니다!</span>
-      <button id="myPartiesBtn" class="btn-secondary">🎉 내 파티 보기</button>
+      <button id="myPartiesBtn" class="btn btn-info">🎉 내 파티 보기</button>
       <div id="myPartiesPopup" class="my-parties-popup">
         <h3>🎈 참여 중인 파티</h3>
         <ul class="my-parties-list">
           <% if (locals.myParties && myParties.length > 0) { %>
-            <% myParties.forEach(party => { %>
+            <% myParties.forEach(party => {
+              const isHost = user.name === party.host_name;
+            %>
               <li>
                 <div class="party-info">
                   <strong><%= party.title %></strong>
@@ -165,9 +21,13 @@
                     <div>👥 <%= party.current_members %>/<%= party.max_members %>명 참여 중</div>
                   </small>
                 </div>
-                <form action="/party/<%= party.id %>/leave" method="POST" class="leave-party-form">
-                  <button type="submit" class="btn-leave" onclick="return confirm('정말로 이 파티를 나가시겠습니까?')">나가기</button>
-                </form>
+                <% if (!isHost) { %>
+                  <form action="/party/<%= party.id %>/leave" method="POST" class="leave-party-form">
+                    <button type="submit" class="btn btn-danger btn-leave" onclick="return confirm('정말로 이 파티를 나가시겠습니까?')">나가기</button>
+                  </form>
+                <% } else { %>
+                  <span class="host-badge">주최자</span>
+                <% } %>
               </li>
             <% }); %>
           <% } else { %>
@@ -178,14 +38,31 @@
           <% } %>
         </ul>
       </div>
-      <a href="/logout">로그아웃</a>
+      <a href="/logout" class="btn btn-outline">로그아웃</a>
     <% } else { %>
       <!-- 로그아웃 상태일 때 -->
-      <a href="/login">로그인</a>
-      <a href="/signup">회원가입</a>
+      <a href="/login" class="btn btn-outline">로그인</a>
+      <a href="/signup" class="btn btn-primary">회원가입</a>
     <% } %>
   </div>
 </nav>
+
+<% if (locals.message) { %>
+  <div id="messageAlert" class="message-alert <%= locals.message.type %> show">
+    <%= locals.message.text %>
+    <button class="close-btn" onclick="this.parentNode.classList.remove('show');">&times;</button>
+  </div>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const messageAlert = document.getElementById('messageAlert');
+      if (messageAlert) {
+        setTimeout(() => {
+          messageAlert.classList.remove('show');
+        }, 2500); // 2.5초 후 자동 숨김
+      }
+    });
+  </script>
+<% } %>
 
 <script>
   document.addEventListener('DOMContentLoaded', () => {
