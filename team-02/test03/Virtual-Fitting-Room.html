@@ -123,65 +123,96 @@
             bottom: -8px;
             cursor: se-resize;
             z-index: 3;
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-        .clothes:hover .resize-handle {
-            opacity: 1;
         }
         .order-controls {
             position: absolute;
-            top: -8px;
-            left: -8px;
+            right: -40px;
+            top: 50%;
+            transform: translateY(-50%);
             display: flex;
             flex-direction: column;
-            gap: 2px;
-            z-index: 4;
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-        .clothes:hover .order-controls {
-            opacity: 1;
+            gap: 4px;
+            z-index: 5;
         }
         .order-btn {
-            width: 16px;
-            height: 16px;
-            background: #28a745;
-            border: 1px solid white;
-            border-radius: 3px;
+            width: 24px;
+            height: 24px;
+            background: #fff;
+            border: 2px solid #0078d7;
+            border-radius: 4px;
+            cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            cursor: pointer;
-            color: white;
-            font-size: 8px;
+            font-size: 12px;
             font-weight: bold;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+            color: #0078d7;
         }
         .order-btn:hover {
-            background: #218838;
-        }
-        .delete-btn {
-            position: absolute;
-            top: -8px;
-            right: -8px;
-            width: 20px;
-            height: 20px;
-            background: #dc3545;
-            border: 1px solid white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            z-index: 4;
+            background: #0078d7;
             color: white;
-            font-size: 12px;
-            opacity: 0;
-            transition: opacity 0.3s;
         }
-        .clothes:hover .delete-btn {
-            opacity: 1;
+        .musinsa-section {
+            margin-top: 24px;
+            padding: 16px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        .musinsa-search {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        .musinsa-search input {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            flex: 1;
+        }
+        .musinsa-search button {
+            padding: 8px 16px;
+            background: #0078d7;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .musinsa-results {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .musinsa-item {
+            background: white;
+            border-radius: 6px;
+            padding: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .musinsa-item:hover {
+            transform: scale(1.05);
+        }
+        .musinsa-item img {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+        .musinsa-item-name {
+            font-size: 12px;
+            margin-top: 4px;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+        .musinsa-item-price {
+            font-size: 11px;
+            color: #0078d7;
+            font-weight: bold;
         }
         .clothes-list {
             display: flex;
@@ -215,11 +246,6 @@
                 </label>
             </div>
             <div class="upload-box">
-                <label>옷 검색<br>
-                    <input type="text" id="clothes-search" placeholder="티셔츠, 바지 등..." style="padding: 4px; margin-top: 6px;">
-                </label>
-            </div>
-            <div class="upload-box">
                 <label>옷 업로드<br>
                     <input type="file" id="clothes-json-upload" accept="application/json,image/png">
                 </label>
@@ -237,11 +263,18 @@
         <div style="margin-top: 16px; padding: 12px; background: #f8f9fa; border-radius: 6px; font-size: 13px; color: #666; text-align: left;">
             <strong>💡 사용법:</strong><br>
             • 옷 이미지 드래그: 위치 이동<br>
-            • Ctrl + 드래그: 크기 조절<br>
-            • 마우스 휠: 크기 조절<br>
+            • 마우스 드래그 (크기 조절 모드): 크기 조절<br>
             • 우하단 핸들: 크기 조절<br>
             • ▲▼ 버튼: 앞뒤 순서 변경<br>
-            • ❌ 버튼: 삭제
+            • 🗑️ 버튼: 삭제
+        </div>
+        <div class="musinsa-section">
+            <h3 style="margin-top: 0;">무신사 옷 검색</h3>
+            <div class="musinsa-search">
+                <input type="text" id="musinsa-keyword" placeholder="검색어를 입력하세요 (예: 티셔츠, 청바지)">
+                <button onclick="searchMusinsa()">검색</button>
+            </div>
+            <div id="musinsa-results" class="musinsa-results"></div>
         </div>
         <div id="lookbook-modal" style="display:none; position:fixed; left:0; top:0; width:100vw; height:100vh; background:rgba(0,0,0,0.3); z-index:99999; align-items:center; justify-content:center;">
             <div style="background:#fff; border-radius:12px; padding:32px; min-width:320px; max-width:90vw; max-height:80vh; overflow:auto; box-shadow:0 4px 24px rgba(0,0,0,0.15);">
@@ -255,71 +288,116 @@
         </div>
     </div>
     <script>
-    // 무신사 API 연동
-    async function fetchMusinsaClothes(keyword = '티셔츠', page = 1) {
+    // 무신사 API 검색 함수
+    async function searchMusinsa() {
+        const keyword = document.getElementById('musinsa-keyword').value.trim();
+        if (!keyword) {
+            alert('검색어를 입력해주세요');
+            return;
+        }
+
+        const resultsDiv = document.getElementById('musinsa-results');
+        resultsDiv.innerHTML = '<div style="text-align: center; padding: 20px;">검색 중...</div>';
+
         try {
-            const encodedKeyword = encodeURIComponent(keyword);
-            const url = `https://api.musinsa.com/api2/dp/v1/plp/goods`;
-            const params = new URLSearchParams({
-                'gf': 'A',
-                'keyword': encodedKeyword,
-                'sortCode': 'POPULAR',
-                'page': page.toString(),
-                'size': '20',
-                'caller': 'SEARCH'
-            });
+            // Flask 백엔드 API 호출
+            const response = await fetch(`/api/musinsa-search?keyword=${encodeURIComponent(keyword)}&size=12`);
+            const result = await response.json();
 
-            const response = await fetch(`${url}?${params}`, {
-                headers: {
-                    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36",
-                    "Referer": "https://www.musinsa.com/"
-                }
-            });
-
-            if (response.ok) {
-                const data = await response.json();
-                if (data.data && data.data.list) {
-                    return data.data.list.map(item => ({
-                        name: item.goodsName,
-                        desc: `${item.brandName} - ${item.price.toLocaleString()}원`,
-                        image: item.thumbnail,
-                        price: item.price,
-                        brand: item.brandName
-                    }));
-                }
+            if (result.success && result.data) {
+                displayMusinsaResults(result.data);
+            } else {
+                throw new Error('검색 결과가 없습니다');
             }
         } catch (error) {
-            console.log('무신사 API 연결 실패, 기본 옷 사용:', error);
+            console.error('무신사 검색 오류:', error);
+            
+            // 오류 발생 시 샘플 데이터 사용
+            const sampleData = [
+                {
+                    "id": 5069232,
+                    "name": "그루브라임 썸머 그래픽 티셔츠",
+                    "image": "https://image.msscdn.net/images/goods_img/20250428/5069232/5069232_17461538318924_500.jpg",
+                    "price": 29000,
+                    "brand": "그루브라임"
+                },
+                {
+                    "id": 1356896,
+                    "name": "M-Logo 그래픽 반팔 티",
+                    "image": "https://image.msscdn.net/images/goods_img/20200318/1356896/1356896_17477222815980_500.jpg",
+                    "price": 35100,
+                    "brand": "지프"
+                },
+                {
+                    "id": 1876212,
+                    "name": "ARCH LOGO TEE",
+                    "image": "https://image.msscdn.net/images/goods_img/20210401/1876212/1876212_1_500.jpg",
+                    "price": 19500,
+                    "brand": "이스트쿤스트"
+                },
+                {
+                    "id": 5182568,
+                    "name": "RIDING BIKE CAT 오버핏 반팔 티셔츠",
+                    "image": "https://image.msscdn.net/images/goods_img/20250613/5182568/5182568_17497786695276_500.jpg",
+                    "price": 22800,
+                    "brand": "오언더알"
+                },
+                {
+                    "id": 4716623,
+                    "name": "피그먼트 크롭 반팔티셔츠",
+                    "image": "https://image.msscdn.net/images/goods_img/20250113/4716623/4716623_17537516325475_500.jpg",
+                    "price": 15900,
+                    "brand": "무아무아"
+                }
+            ];
+            
+            displayMusinsaResults(sampleData);
+            resultsDiv.insertAdjacentHTML('afterbegin', '<div style="background: #fff3cd; color: #856404; padding: 8px; border-radius: 4px; margin-bottom: 12px; font-size: 12px;">⚠️ 네트워크 오류로 샘플 데이터를 표시합니다</div>');
         }
-        
-        // API 실패 시 기본 옷들 반환
-        return getDefaultClothes();
     }
 
-    function getDefaultClothes() {
-        return [
-            { name: '화이트 셔츠', desc: '깔끔한 화이트 셔츠', image: '/static/clothes/white_shirt.png' },
-            { name: '블루 티셔츠', desc: '편안한 블루 티셔츠', image: '/static/clothes/blue_tshirt.png' },
-            { name: '니트 스웨터', desc: '따뜻한 니트 스웨터', image: '/static/clothes/knit_sweater.png' },
-            { name: '클래식 청바지', desc: '스타일리시한 청바지', image: '/static/clothes/classic_jeans.png' },
-            { name: '데님 쇼츠', desc: '여름용 데님 쇼츠', image: '/static/clothes/denim_shorts.png' },
-            { name: '플리츠 스커트', desc: '우아한 플리츠 스커트', image: '/static/clothes/pleats_skirt.png' },
-            { name: '서머 드레스', desc: '시원한 서머 드레스', image: '/static/clothes/summer_dress.png' },
-            { name: '가죽 자켓', desc: '멋진 가죽 자켓', image: '/static/clothes/leather_jacket.png' }
-        ];
+    function displayMusinsaResults(items) {
+        const resultsDiv = document.getElementById('musinsa-results');
+        resultsDiv.innerHTML = '';
+
+        items.forEach(item => {
+            const itemDiv = document.createElement('div');
+            itemDiv.className = 'musinsa-item';
+            itemDiv.innerHTML = `
+                <img src="${item.image}" alt="${item.name}" onerror="this.src='data:image/svg+xml,<svg xmlns=\\'http://www.w3.org/2000/svg\\' width=\\'120\\' height=\\'120\\'><rect width=\\'120\\' height=\\'120\\' fill=\\'%23f0f0f0\\'/><text x=\\'60\\' y=\\'60\\' text-anchor=\\'middle\\' dy=\\'.3em\\' fill=\\'%23999\\'>이미지 없음</text></svg>'">
+                <div class="musinsa-item-name">${item.name}</div>
+                <div class="musinsa-item-price">${item.price.toLocaleString()}원</div>
+            `;
+            
+            itemDiv.onclick = () => {
+                addMusinsaClothesToFittingRoom(item);
+            };
+            
+            resultsDiv.appendChild(itemDiv);
+        });
     }
 
-    // 초기 옷 로드
-    async function loadInitialClothes() {
-        const clothes = await fetchMusinsaClothes('옷', 1);
-        clothesData = clothes;
-        renderClothesList();
+    function addMusinsaClothesToFittingRoom(item) {
+        const clothesItem = {
+            name: item.name,
+            desc: `${item.brand} - ${item.price.toLocaleString()}원`,
+            image: item.image
+        };
+        addClothesToFittingRoom(clothesItem);
     }
 
-    // 페이지 로드 시 무신사 옷들 가져오기
-    window.addEventListener('load', function() {
-        loadInitialClothes();
+    // Enter 키로 검색
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('musinsa-keyword');
+        if (searchInput) {
+            searchInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    searchMusinsa();
+                }
+            });
+        }
     });
+
     // 전신 사진 업로드
     const photoUpload = document.getElementById('photo-upload');
     const userPhoto = document.getElementById('user-photo');
@@ -335,23 +413,6 @@
             };
             reader.readAsDataURL(file);
         }
-    });
-
-    // 옷 검색
-    const clothesSearch = document.getElementById('clothes-search');
-    let searchTimeout;
-    clothesSearch.addEventListener('input', function(e) {
-        clearTimeout(searchTimeout);
-        searchTimeout = setTimeout(async () => {
-            const keyword = e.target.value.trim();
-            if (keyword) {
-                const clothes = await fetchMusinsaClothes(keyword, 1);
-                clothesData = clothes;
-                renderClothesList();
-            } else {
-                loadInitialClothes();
-            }
-        }, 500);
     });
 
     // 옷 JSON/PNG 업로드 및 썸네일 표시
@@ -431,11 +492,9 @@
         clothes.style.left = state?.left || '100px';
         clothes.style.top = state?.top || '100px';
         clothes.style.width = state?.width || '200px';
-        clothes.style.zIndex = state?.zIndex || getNextZIndex();
         clothes.draggable = false;
         clothes.setAttribute('data-name', item.name);
         clothes.setAttribute('data-desc', item.desc);
-        clothes.setAttribute('data-id', Date.now() + Math.random());
         
         // 툴팁
         clothes.addEventListener('mouseenter', function(e) {
@@ -445,46 +504,73 @@
             hideTooltip();
         });
         
-        // 순서 변경 버튼들
-        const orderControls = document.createElement('div');
-        orderControls.className = 'order-controls';
-        
-        const moveUpBtn = document.createElement('div');
-        moveUpBtn.className = 'order-btn';
-        moveUpBtn.innerHTML = '▲';
-        moveUpBtn.title = '앞으로';
-        moveUpBtn.onclick = function(e) {
-            e.stopPropagation();
-            changeOrder(clothes, 'up');
-        };
-        
-        const moveDownBtn = document.createElement('div');
-        moveDownBtn.className = 'order-btn';
-        moveDownBtn.innerHTML = '▼';
-        moveDownBtn.title = '뒤로';
-        moveDownBtn.onclick = function(e) {
-            e.stopPropagation();
-            changeOrder(clothes, 'down');
-        };
-        
-        orderControls.appendChild(moveUpBtn);
-        orderControls.appendChild(moveDownBtn);
-        
         // 삭제 버튼
         const delBtn = document.createElement('div');
-        delBtn.innerHTML = '×';
-        delBtn.className = 'delete-btn';
+        delBtn.innerHTML = '🗑️';
+        delBtn.style.position = 'absolute';
+        delBtn.style.right = '-18px';
+        delBtn.style.top = '-18px';
+        delBtn.style.background = '#fff';
+        delBtn.style.border = '1px solid #ccc';
+        delBtn.style.borderRadius = '50%';
+        delBtn.style.width = '24px';
+        delBtn.style.height = '24px';
+        delBtn.style.display = 'flex';
+        delBtn.style.alignItems = 'center';
+        delBtn.style.justifyContent = 'center';
+        delBtn.style.cursor = 'pointer';
+        delBtn.style.zIndex = '10';
         delBtn.title = '삭제';
         delBtn.onclick = function(e) {
             e.stopPropagation();
             fittingRoom.removeChild(clothes);
             hideTooltip();
         };
-        
-        clothes.appendChild(orderControls);
         clothes.appendChild(delBtn);
+
+        // 순서 변경 버튼들
+        const orderControls = document.createElement('div');
+        orderControls.className = 'order-controls';
+        
+        const upBtn = document.createElement('div');
+        upBtn.className = 'order-btn';
+        upBtn.innerHTML = '▲';
+        upBtn.title = '앞으로';
+        upBtn.onclick = function(e) {
+            e.stopPropagation();
+            moveToFront(clothes);
+        };
+        
+        const downBtn = document.createElement('div');
+        downBtn.className = 'order-btn';
+        downBtn.innerHTML = '▼';
+        downBtn.title = '뒤로';
+        downBtn.onclick = function(e) {
+            e.stopPropagation();
+            moveToBack(clothes);
+        };
+        
+        orderControls.appendChild(upBtn);
+        orderControls.appendChild(downBtn);
+        clothes.appendChild(orderControls);
+        
         fittingRoom.appendChild(clothes);
         addDragAndResize(clothes);
+    }
+
+    // 레이어 순서 변경 함수들
+    function moveToFront(element) {
+        const fittingRoom = document.getElementById('fitting-room');
+        const clothesElements = Array.from(fittingRoom.querySelectorAll('.clothes'));
+        const maxZIndex = Math.max(...clothesElements.map(el => parseInt(el.style.zIndex) || 2));
+        element.style.zIndex = maxZIndex + 1;
+    }
+
+    function moveToBack(element) {
+        const fittingRoom = document.getElementById('fitting-room');
+        const clothesElements = Array.from(fittingRoom.querySelectorAll('.clothes'));
+        const minZIndex = Math.min(...clothesElements.map(el => parseInt(el.style.zIndex) || 2));
+        element.style.zIndex = Math.max(1, minZIndex - 1);
     }
 
     // 툴팁 표시
@@ -517,48 +603,35 @@
         }
     }
 
-    // Z-index 관리 함수들
-    function getNextZIndex() {
-        const fittingRoom = document.getElementById('fitting-room');
-        const clothesEls = fittingRoom.querySelectorAll('.clothes');
-        let maxZ = 1;
-        clothesEls.forEach(el => {
-            const z = parseInt(el.style.zIndex) || 1;
-            if (z > maxZ) maxZ = z;
-        });
-        return maxZ + 1;
-    }
-
-    function changeOrder(clothesEl, direction) {
-        const fittingRoom = document.getElementById('fitting-room');
-        const allClothes = Array.from(fittingRoom.querySelectorAll('.clothes'));
-        const currentZ = parseInt(clothesEl.style.zIndex) || 1;
-        
-        if (direction === 'up') {
-            // 앞으로 (z-index 증가)
-            clothesEl.style.zIndex = getNextZIndex();
-        } else {
-            // 뒤로 (z-index 감소)
-            let minZ = Math.min(...allClothes.map(el => parseInt(el.style.zIndex) || 1));
-            clothesEl.style.zIndex = Math.max(1, minZ - 1);
-        }
-    }
-
-    // 드래그 & 크기 조절 기능 (휠/핸들/클릭드래그)
+    // 개선된 드래그 & 크기 조절 기능
     function addDragAndResize(clothes) {
         let isDragging = false, isResizing = false, isDirectResize = false;
         let startX, startY, startLeft, startTop, startWidth;
+        let resizeMode = false; // 크기 조절 모드 토글
 
         // 크기 조절 핸들 추가
         const handle = document.createElement('div');
         handle.className = 'resize-handle';
         clothes.appendChild(handle);
 
+        // 더블클릭으로 크기 조절 모드 토글
+        clothes.addEventListener('dblclick', function(e) {
+            e.preventDefault();
+            resizeMode = !resizeMode;
+            if (resizeMode) {
+                clothes.style.border = '2px dashed #ff6b6b';
+                clothes.title = '크기 조절 모드 - 드래그하여 크기 조절';
+            } else {
+                clothes.style.border = '';
+                clothes.title = item.name;
+            }
+        });
+
         clothes.addEventListener('mousedown', function(e) {
-            if (e.target === handle || e.target.classList.contains('order-btn') || e.target.classList.contains('delete-btn')) return;
+            if (e.target === handle) return;
             
-            // Ctrl 키를 누르고 있으면 크기 조절 모드
-            if (e.ctrlKey || e.metaKey) {
+            // 크기 조절 모드에서는 드래그로 크기 조절
+            if (resizeMode) {
                 isDirectResize = true;
                 clothes.classList.add('selected');
                 startX = e.clientX;
@@ -568,6 +641,7 @@
                 return;
             }
             
+            // 일반 모드에서는 위치 이동
             isDragging = true;
             clothes.classList.add('selected');
             startX = e.clientX;
@@ -619,14 +693,14 @@
             document.body.style.cursor = 'se-resize';
         });
 
-        // 마우스 휠로 크기 조절
-        clothes.addEventListener('wheel', function(e) {
-            e.preventDefault();
-            let w = clothes.offsetWidth;
-            let delta = e.deltaY < 0 ? 20 : -20;
-            w = Math.max(40, w + delta);
-            clothes.style.width = w + 'px';
-        });
+        // 마우스 휠로 크기 조절 제거 (요청사항에 따라)
+        // clothes.addEventListener('wheel', function(e) {
+        //     e.preventDefault();
+        //     let w = clothes.offsetWidth;
+        //     let delta = e.deltaY < 0 ? 20 : -20;
+        //     w = Math.max(40, w + delta);
+        //     clothes.style.width = w + 'px';
+        // });
     }
 
     // 룩북 저장/불러오기/초기화
@@ -649,8 +723,7 @@
                 image: el.src,
                 left: el.style.left,
                 top: el.style.top,
-                width: el.style.width,
-                zIndex: el.style.zIndex
+                width: el.style.width
             });
         });
         let name = prompt('룩북 이름을 입력하세요:', '나의 룩북');
