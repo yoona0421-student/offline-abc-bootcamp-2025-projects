@@ -22,15 +22,24 @@ body {
   position: relative;
 }
 
-.emotion-buttons {
-  margin-top: 1.5rem;
-  z-index: 10;
+.emotion-button {
+  font-family: 'Gamja Flower', cursive;
+  animation: floatIn 1s ease forwards;
+  transform: translateY(25px);
+  opacity: 0;
+}
+
+@keyframes floatIn {
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
 button.emotion {
   font-size: 1.2rem;
-  margin: 0.3rem;
-  padding: 0.5rem 1rem;
+  margin: 0.6rem;
+  padding: 0.7rem 1rem;
   border: none;
   border-radius: 1rem;
   background-color: #ffffffcc;
@@ -51,20 +60,21 @@ button.emotion {
 }
 
 .emoji {
-  font-size: 5rem;
-  margin-top: 2rem;
-  animation: bounce 2s ease-in-out infinite;
+  font-size: 6rem;
+  margin-bottom: 1rem;
 }
 
 @keyframes bounce {
   0%   { transform: translateY(0); }
-  50%  { transform: translateY(-15px); }
+  50%  { transform: translateY(-10px); }
   100% { transform: translateY(0); }
 }
 
 .message, .cheer, .quote {
-  margin-top: 1rem;
-  font-size: 1.2rem;
+  font-family: 'Nanum Pen Script', cursive;
+  font-size: 2rem;
+  text-align: center;
+  margin: 0.7rem 0;
 }
 
 .emotion-blast {
@@ -85,14 +95,136 @@ button.emotion {
   100% { transform: scale(1.8); opacity: 0; }
 }
 
+/*감정 결과(이모지 + 메시지) 중앙 정렬 */
+.emotion-display {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  margin-top: 4rem;
+}
+
 .floating-emoji {
   position: absolute;
   animation: floatUp 3s ease-out forwards;
   pointer-events: none;
+  z-index: 999;
+}
+@keyframes floatUp {
+  0% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(-150px); }
+}
+
+.emotion-effect {
+  border-radius: 50%;
+  z-index: 5;
+}
+
+.emoji-particle {
+  position: fixed;
+  font-size: 1.8rem;
+  pointer-events: none;
+  opacity: 1;
+  transition: transform 1s ease-out, opacity 1s ease-out;
   z-index: 9999;
 }
 
-@keyframes floatUp {
-  0% { opacity: 1; transform: translateY(0) scale(1); }
-  100% { opacity: 0; transform: translateY(-150px) scale(1.5); }
+.header {
+  position: relative;
+  width: 100%;
+  display: flex;
+  justify-content: center;  /* 중앙 정렬 */
+  align-items: center;
+  margin-top: 30px;          /* 작은 화면에서 줄바꿈 허용 */
+}
+
+.header h1 {
+  font-family: 'Nanum Brush Script', 'Gowun Dodum', sans-serif;
+  font-size: 4rem;
+  font-weight: normal;
+  color: #333;
+  letter-spacing: 1px;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+  margin: 0;
+}
+
+
+.header-container {
+  display: flex;
+  justify-content: center; /* 중앙 정렬 */
+  align-items: center;
+  flex-direction: column;
+  margin-top: 2rem;
+  text-align: center;
+}
+
+.header-container h1 {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.back-button {
+  position: absolute;
+  right: 70px;
+  top: 0;
+  padding:  10px;
+  border: none;
+  background-color: white;
+  border-radius: 20px;
+  box-shadow: 4px 4px 10px rgba(0,0,0,0.1);
+  font-family: 'Gowun Dodum', sans-serif;
+  cursor: pointer;
+  transition: background 0.5s;
+}
+
+
+
+.save-info {
+  margin-top: 2rem;
+  font-size: 2rem;
+  color: #666;
+  font-style: italic;
+  opacity: 0.7;
+}
+
+.save-info {
+  font-family: 'Hi Melody', cursive;
+  font-size: 1.1rem;
+  color: #444;
+  opacity: 0.8;
+  margin-top: 2rem;
+  text-align: center;
+}
+
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(30px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.input-area {
+  margin: 1.5rem 0;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+#custom-emotion-input {
+  padding: 0.6rem 1rem;
+  border-radius: 20px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  font-family: 'Hi Melody', cursive;
+  width: 200px;
+}
+
+#add-emotion-button {
+  padding: 0.6rem 1rem;
+  border-radius: 20px;
+  border: none;
+  background-color: #fff;
+  box-shadow: 2px 2px 6px rgba(0,0,0,0.1);
+  font-family: 'Hi Melody', cursive;
+  cursor: pointer;
 }
